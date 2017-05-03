@@ -4,6 +4,7 @@
 #include <DirectXPackedVector.h>
 #include <D3Dcompiler.h>
 #include <fstream>
+#include <array>
 
 #pragma comment( lib, "d3d11.lib")
 #pragma comment( lib, "D3DCompiler.lib")
@@ -13,6 +14,8 @@
 // this function initializes and prepares Direct3D for use
 CoreGraphics::CoreGraphics( WindowKey& key )
 {
+	assert( key.window != nullptr );
+
 	// set up the swap chain description
 	DXGI_SWAP_CHAIN_DESC scd = {0};
 	scd.BufferCount = 1;                                    // one back buffer
@@ -22,8 +25,9 @@ CoreGraphics::CoreGraphics( WindowKey& key )
 	scd.SampleDesc.Count = 4;                               // how many multisamples
 	scd.Windowed = TRUE;                                    // windowed/full-screen mode
 
+	HRESULT hr;
 	// Create the device and device context objects
-	D3D11CreateDevice( 
+	if( FAILED( hr = D3D11CreateDevice( 
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
@@ -33,7 +37,10 @@ CoreGraphics::CoreGraphics( WindowKey& key )
 		D3D11_SDK_VERSION,
 		&dev,
 		nullptr,
-		&devcon );
+		&devcon ) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr, L"Creating Device");
+	}
 
 
 	// obtain the DXGI factory
@@ -42,17 +49,26 @@ CoreGraphics::CoreGraphics( WindowKey& key )
 	dxgiDevice->GetAdapter(&dxgiAdapter);
 	dxgiAdapter->GetParent( __uuidof(IDXGIFactory),&dxgiFactory );
 
-	dxgiFactory->CreateSwapChain(
+	if( FAILED( hr = dxgiFactory->CreateSwapChain(
 		dev.Get(),
 		&scd,
-		&swapchain);
+		&swapchain) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr, L"Creating Swap Chain");
+	}
 
 	// get the address of the back buffer
 	ID3D11Texture2D *pBackBuffer;
-	swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+	if( FAILED( hr = swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer) ) )
+	{
+		throw GRAPHICS_EXCEPTION ( hr, L"Getting Back Buffer");
+	}
 
 	// use the back buffer address to create the render target
-	dev->CreateRenderTargetView(pBackBuffer, NULL, &backbuffer);
+	if( FAILED( hr = dev->CreateRenderTargetView(pBackBuffer, NULL, &backbuffer) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Creating Render Target View" );
+	}
 	pBackBuffer->Release();
 
 	// set the render target as the back buffer
@@ -109,12 +125,19 @@ void CoreGraphics::Initialize()
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;       // use as a vertex buffer
 	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;    // allow CPU to write in buffer
 
-	dev->CreateBuffer(&bd, NULL, &pVBuffer);       // create the buffer
+	HRESULT hr;
 
+	if( FAILED( hr = dev->CreateBuffer(&bd, NULL, &pVBuffer) ) )       // create the buffer
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Creating Vertex Buffer" );
+	}
 
 												   // copy the vertices into the buffer
 	D3D11_MAPPED_SUBRESOURCE ms;
-	devcon->Map(pVBuffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);    // map the buffer
+	if( FAILED( hr = devcon->Map(pVBuffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms) ) )    // map the buffer
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Mapping Vertex Buffer" );
+	}
 	memcpy(ms.pData, OurVertices, sizeof(OurVertices));                 // copy the data
 	devcon->Unmap(pVBuffer.Get(), NULL);                                      // unmap the buffer
 
@@ -124,12 +147,24 @@ void CoreGraphics::Initialize()
 
 	// load and compile the two shaders
 	ID3D10Blob *VS, *PS;
-	D3DCompile(0 ,0 ,"Shaders.shader", 0, 0, "VShader", "vs_4_0", 0, 0, &VS, 0);
-	D3DCompile(0 ,0 ,"Shaders.shader", 0, 0, "PShader", "ps_4_0", 0, 0, &PS, 0);
+	if( FAILED( hr = D3DCompile(0 ,0 ,"Shaders.shader", 0, 0, "VShader", "vs_4_0", 0, 0, &VS, 0) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Compiling Vertex Shader" );
+	}
+	if( FAILED( hr = D3DCompile(0 ,0 ,"Shaders.shader", 0, 0, "PShader", "ps_4_0", 0, 0, &PS, 0) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Compiling Pixel Shader" );
+	}
 
 	// encapsulate both shaders into shader objects
-	dev->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), NULL, &pVS);
-	dev->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), NULL, &pPS);
+	if( FAILED( hr = dev->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), NULL, &pVS) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Creating Vertex Shader" );
+	}
+	if( FAILED( hr = dev->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), NULL, &pPS) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Creating Pixel Shader" );
+	}
 
 	// set the shader objects
 	devcon->VSSetShader(pVS.Get(), 0, 0);
@@ -155,6 +190,51 @@ void CoreGraphics::Update()
 // this function renders a single frame of 3D graphics
 void CoreGraphics::Render()
 {
+	HRESULT hr;
 	// switch the back buffer and the front buffer
-	swapchain->Present(1, 0);
+	if( FAILED( hr = swapchain->Present(1, 0) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Swapping Back and Front Buffers" );
+	}
+}
+
+CoreGraphics::GraphicsException::GraphicsException( HRESULT hr,const std::wstring & error,const wchar_t * fileName,unsigned int lineFound )
+	:
+	MyException( fileName, lineFound, error ),
+	hr( hr )
+{}
+
+std::wstring CoreGraphics::GraphicsException::GetErrorMessage() const
+{
+	const std::wstring empty = L"";
+	const std::wstring errorName = GetErrorType();
+	const std::wstring errorDesc = GetErrorInfo();
+	const std::wstring& note = GetError();
+	const std::wstring location = GetLocation();
+	return    (!errorName.empty() ? std::wstring( L"Error: " ) + errorName + L"\n"
+		: empty)
+		+ (!errorDesc.empty() ? std::wstring( L"Description: " ) + errorDesc + L"\n"
+			: empty)
+		+ (!note.empty() ? std::wstring( L"Note: " ) + note + L"\n"
+			: empty)
+		+ (!location.empty() ? std::wstring( L"Location: " ) + location
+			: empty);
+}
+
+std::wstring CoreGraphics::GraphicsException::GetErrorType( ) const
+{
+	return DXGetErrorString( hr );
+}
+
+std::wstring CoreGraphics::GraphicsException::GetErrorInfo( ) const
+{
+	std::array<wchar_t,512> wideDescription;
+	DXGetErrorDescription( hr,wideDescription.data(),wideDescription.size() );
+	return wideDescription.data();
+
+}
+
+std::wstring CoreGraphics::GraphicsException::GetExceptionType( ) const
+{
+	return L"Core Graphics Exception";
 }

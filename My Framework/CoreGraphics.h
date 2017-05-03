@@ -3,7 +3,10 @@
 #include <d3dx10.h>
 #include <wrl.h>
 #include <vector>
+#include "My Exceptions.h"
+#include "DXerr.h"
 
+#define GRAPHICS_EXCEPTION( hr, error ) CoreGraphics::GraphicsException( hr, error, _CRT_WIDE(__FILE__),__LINE__)
 
 // a struct to represent a single vertex
 struct VERTEX
@@ -14,6 +17,18 @@ struct VERTEX
 
 class CoreGraphics
 {
+public:
+	class GraphicsException : public MyException
+	{
+	public:
+		GraphicsException( HRESULT hr, const std::wstring& error, const wchar_t* fileName, unsigned int lineFound);
+		std::wstring GetErrorType() const;
+		std::wstring GetErrorInfo() const;
+		std::wstring GetErrorMessage() const override;
+		std::wstring GetExceptionType() const override;
+	private:
+		HRESULT hr;
+	};
 public:
 	CoreGraphics( class WindowKey& key );
 	CoreGraphics( const CoreGraphics& ) = delete;
