@@ -1,6 +1,5 @@
 #pragma once
 #include <d3d11.h>
-#include <d3dx10.h>
 #include <wrl.h>
 #include <vector>
 #include "My Exceptions.h"
@@ -12,7 +11,7 @@
 struct VERTEX
 {
 	float X, Y, Z;			// vertex position
-	D3DXCOLOR Color;		// vertex color
+	float Color[4];		// vertex color
 };
 
 class CoreGraphics

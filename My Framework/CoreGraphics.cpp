@@ -1,11 +1,7 @@
 #include "CoreGraphics.h"
 #include "Window.h"
-#include <DirectXMath.h>
-#include <DirectXPackedVector.h>
-#include <D3Dcompiler.h>
 #include <fstream>
 #include <array>
-#include <wrl.h>
 #include <vector>
 
 #pragma comment( lib, "d3d11.lib")
@@ -130,9 +126,9 @@ void CoreGraphics::Initialize()
 	// create a triangle using the VERTEX struct
 	VERTEX OurVertices[] =
 	{
-		{0.0f, 0.5f, 0.0f, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f)},
-		{0.45f, -0.5, 0.0f, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)},
-		{-0.45f, -0.5f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f)}
+		{0.0f, 0.5f, 0.0f, {1.0f, 0.0f, 0.0f, 1.0f}},
+		{0.45f, -0.5, 0.0f, {0.0f, 1.0f, 0.0f, 1.0f} },
+		{-0.45f, -0.5f, 0.0f, {0.0f, 0.0f, 1.0f, 1.0f}}
 	};
 
 
