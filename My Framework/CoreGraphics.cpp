@@ -35,6 +35,7 @@ CoreGraphics::CoreGraphics( WindowKey& key )
 		nullptr,
 		&devcon );
 
+
 	// obtain the DXGI factory
 
 	dev.As(&dxgiDevice);
