@@ -157,9 +157,7 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PShader.shh" />
     <None Include="Shaders.shader" />
-    <None Include="VShader.shh" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CoreGraphics.h" />

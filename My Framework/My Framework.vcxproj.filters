@@ -29,12 +29,6 @@
     <None Include="Shaders.shader">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="VShader.shh">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="PShader.shh">
-      <Filter>Source Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
