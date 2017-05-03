@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "My Exceptions.h"
 
 CoreWindow::CoreWindow( HINSTANCE hInst,wchar_t* lpCmdLine)
 	:
@@ -54,6 +55,11 @@ bool CoreWindow::readMessage()
 
 	}
 	return true;
+}
+
+void CoreWindow::DisplayMessage( const std::wstring& title,const std::wstring& message ) const
+{
+	MessageBox( window,message.c_str(),title.c_str(),MB_OK );
 }
 
 // this is the main message handler for the program

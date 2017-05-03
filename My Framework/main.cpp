@@ -12,15 +12,31 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 	LPWSTR lpCmdLine,
 	INT)
 {
-	CoreWindow window( hInstance,lpCmdLine );
-	CoreGraphics gfx( window );
-
-	// Enter the infinite message loop
-	while(window.readMessage())
+	try
 	{
+		CoreWindow window( hInstance,lpCmdLine );
 
+		try
+		{
+			CoreGraphics gfx( window );
+
+			// Enter the infinite message loop
+			while( window.readMessage( ) )
+			{
+
+			}
+		}
+		catch( const MyException& e )
+		{
+			const std::wstring eMsg = e.GetErrorMessage() + 
+				L"\n\nException caught at Windows message loop.";
+			window.DisplayMessage( e.GetExceptionType(),eMsg );
+		}
 	}
-
+	catch( const MyException& e )
+	{
+		
+	}
 	// return this part of the WM_QUIT message to Windows
 	return 0;
 }

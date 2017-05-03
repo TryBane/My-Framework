@@ -215,7 +215,7 @@ std::wstring CoreGraphics::GraphicsException::GetErrorMessage() const
 		: empty)
 		+ (!errorDesc.empty() ? std::wstring( L"Description: " ) + errorDesc + L"\n"
 			: empty)
-		+ (!note.empty() ? std::wstring( L"Note: " ) + note + L"\n"
+		+ (!note.empty() ? std::wstring( L"Error Occurred: " ) + note + L"\n"
 			: empty)
 		+ (!location.empty() ? std::wstring( L"Location: " ) + location
 			: empty);
