@@ -9,8 +9,6 @@
 #pragma comment( lib, "d3d11.lib")
 #pragma comment( lib, "D3DCompiler.lib")
 
-
-
 // this function initializes and prepares Direct3D for use
 CoreGraphics::CoreGraphics( WindowKey& key )
 {
@@ -147,6 +145,7 @@ void CoreGraphics::Initialize()
 
 	// load and compile the two shaders
 	ID3D10Blob *VS, *PS;
+	/*
 	if( FAILED( hr = D3DCompile(0 ,0 ,"Shaders.shader", 0, 0, "VShader", "vs_4_0", 0, 0, &VS, 0) ) )
 	{
 		throw GRAPHICS_EXCEPTION( hr,L"Compiling Vertex Shader" );
@@ -155,7 +154,7 @@ void CoreGraphics::Initialize()
 	{
 		throw GRAPHICS_EXCEPTION( hr,L"Compiling Pixel Shader" );
 	}
-
+	
 	// encapsulate both shaders into shader objects
 	if( FAILED( hr = dev->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), NULL, &pVS) ) )
 	{
@@ -179,6 +178,7 @@ void CoreGraphics::Initialize()
 
 	//dev->CreateInputLayout(ied, 2, VS->GetBufferPointer(), VS->GetBufferSize(), &pLayout);
 	devcon->IASetInputLayout(pLayout.Get());
+	*/
 }
 
 // this function performs updates to the state of the game

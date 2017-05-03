@@ -23,7 +23,8 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 			// Enter the infinite message loop
 			while( window.readMessage( ) )
 			{
-
+				gfx.Update();
+				gfx.Render();
 			}
 		}
 		catch( const MyException& e )
