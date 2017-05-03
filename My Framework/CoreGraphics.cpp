@@ -6,9 +6,33 @@
 #include <fstream>
 #include <array>
 #include <wrl.h>
+#include <vector>
 
 #pragma comment( lib, "d3d11.lib")
 #pragma comment( lib, "D3DCompiler.lib")
+
+// this function loads a file into an Array^
+std::vector<char*> LoadShaderFile(std::string File)
+{
+	std::vector<char*> FileData;
+
+	// open the file
+	std::ifstream VertexFile(File, std::ios::in | std::ios::binary | std::ios::ate);
+
+	// if open was successful
+	if(VertexFile.is_open())
+	{
+		// find the length of the file
+		int Length = (int)VertexFile.tellg();
+
+		// collect the file data
+		VertexFile.seekg(0, std::ios::beg);
+		VertexFile.read(FileData[0], Length);
+		VertexFile.close();
+	}
+
+	return FileData;
+}
 
 // this function initializes and prepares Direct3D for use
 CoreGraphics::CoreGraphics( WindowKey& key )
