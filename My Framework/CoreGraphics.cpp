@@ -16,10 +16,10 @@ std::vector<byte> LoadShaderFile(std::string File)
 	std::vector<byte> FileData;
 
 	// open the file
-	std::ifstream VertexFile(File, std::ifstream::in | std::ifstream::binary | std::ifstream::ate);
+	std::ifstream VertexFile(File, std::ios::in | std::ios::binary | std::ios::ate);
 
 	// if open was successful
-	if(VertexFile.is_open())
+	if (VertexFile.is_open())
 	{
 		// find the length of the file
 		int Length = (int)VertexFile.tellg();
@@ -162,8 +162,8 @@ void CoreGraphics::Initialize()
 	/***********************************/
 
 	// load the shader files
-	std::vector<byte> VSFile = LoadShaderFile("FramebufferVS.cso");
-	std::vector<byte> PSFile = LoadShaderFile("FramebufferPS.cso");
+	std::vector<byte> VSFile = LoadShaderFile("VertexShader.cso");
+	std::vector<byte> PSFile = LoadShaderFile("PixelShader.cso");
 
 	// create the shader objects
 	if( FAILED( hr = dev->CreateVertexShader(VSFile.data(), VSFile.size(), nullptr, &pVS) ) )
