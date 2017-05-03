@@ -5,6 +5,7 @@
 #include <D3Dcompiler.h>
 #include <fstream>
 #include <array>
+#include <wrl.h>
 
 #pragma comment( lib, "d3d11.lib")
 #pragma comment( lib, "D3DCompiler.lib")
@@ -56,22 +57,17 @@ CoreGraphics::CoreGraphics( WindowKey& key )
 	}
 
 	// get the address of the back buffer
-	ID3D11Texture2D *pBackBuffer;
-	if( FAILED( hr = swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer) ) )
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> pBackBuffer;
+	if( FAILED( hr = swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), &pBackBuffer) ) )
 	{
 		throw GRAPHICS_EXCEPTION ( hr, L"Getting Back Buffer");
 	}
 
 	// use the back buffer address to create the render target
-	if( FAILED( hr = dev->CreateRenderTargetView(pBackBuffer, NULL, &backbuffer) ) )
+	if( FAILED( hr = dev->CreateRenderTargetView(pBackBuffer.Get(), nullptr, &backbuffer) ) )
 	{
 		throw GRAPHICS_EXCEPTION( hr,L"Creating Render Target View" );
 	}
-	pBackBuffer->Release();
-
-	// set the render target as the back buffer
-	devcon->OMSetRenderTargets(1, &backbuffer, NULL);
-
 
 
 	// Set the viewport
@@ -85,7 +81,7 @@ CoreGraphics::CoreGraphics( WindowKey& key )
 
 	devcon->RSSetViewports(1, &viewport);
 
-	Initialize();
+
 }
 
 CoreGraphics::~CoreGraphics()
@@ -190,6 +186,13 @@ void CoreGraphics::Update()
 // this function renders a single frame of 3D graphics
 void CoreGraphics::Render()
 {
+	// set our new render target object as the active render target
+	devcon->OMSetRenderTargets(1, backbuffer.GetAddressOf(), nullptr);
+
+	// clear the back buffer to a deep blue
+	float color[4] = {0.0f, 0.2f, 0.4f, 1.0f};
+	devcon->ClearRenderTargetView(backbuffer.Get(), color);
+
 	HRESULT hr;
 	// switch the back buffer and the front buffer
 	if( FAILED( hr = swapchain->Present(1, 0) ) )
