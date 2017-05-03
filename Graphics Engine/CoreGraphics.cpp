@@ -126,9 +126,9 @@ void CoreGraphics::Initialize()
 	// create a triangle using the VERTEX struct
 	VERTEX OurVertices[] =
 	{
-		{-0.25f, 0.5f, 0.0f, {0.0f, 0.0f, 0.0f, 1.0f}},
-		{0.20f, -0.5, 0.0f, {0.0f, 0.0f, 0.0f, 1.0f} },
-		{-0.70f, -0.5f, 0.0f, {0.0f, 0.0f, 0.0f, 1.0f}}
+		{-0.25f, 0.5f, 0.0f, {1.0f, 0.0f, 0.0f, 1.0f}},
+		{0.20f, -0.5, 0.0f, {0.0f, 1.0f, 0.0f, 1.0f} },
+		{-0.70f, -0.5f, 0.0f, {0.0f, 0.0f, 1.0f, 1.0f}}
 	};
 
 
