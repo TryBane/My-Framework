@@ -38,6 +38,7 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 	{
 		
 	}
+
 	// return this part of the WM_QUIT message to Windows
 	return 0;
 }

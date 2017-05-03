@@ -41,12 +41,12 @@ CoreGraphics::CoreGraphics( WindowKey& key )
 
 	// set up the swap chain description
 	DXGI_SWAP_CHAIN_DESC scd = {0};
-	scd.BufferCount = 1;                                    // one back buffer
-	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;     // use 32-bit color
-	scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;      // how swap chain is to be used
-	scd.OutputWindow = key.window;                          // the window to be used
-	scd.SampleDesc.Count = 4;                               // how many multisamples
-	scd.Windowed = TRUE;                                    // windowed/full-screen mode
+	scd.BufferCount = 1;									// one back buffer
+	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;		// use 32-bit color
+	scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;		// how swap chain is to be used
+	scd.OutputWindow = key.window;							// the window to be used
+	scd.SampleDesc.Count = 4;								// how many multisamples
+	scd.Windowed = TRUE;									// windowed/full-screen mode
 
 	HRESULT hr;
 	// Create the device and device context objects
@@ -67,6 +67,9 @@ CoreGraphics::CoreGraphics( WindowKey& key )
 
 
 	// obtain the DXGI factory
+	Microsoft::WRL::ComPtr<IDXGIDevice> dxgiDevice;
+	Microsoft::WRL::ComPtr<IDXGIFactory> dxgiFactory;
+	Microsoft::WRL::ComPtr<IDXGIAdapter> dxgiAdapter;
 
 	dev.As(&dxgiDevice);
 	dxgiDevice->GetAdapter(&dxgiAdapter);
@@ -136,26 +139,26 @@ void CoreGraphics::Initialize()
 	// create the vertex buffer
 	D3D11_BUFFER_DESC bd = { 0 };
 
-	bd.Usage = D3D11_USAGE_DYNAMIC;                // write access access by CPU and GPU
-	bd.ByteWidth = sizeof(VERTEX) * 3;             // size is the VERTEX struct * 3
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;       // use as a vertex buffer
-	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;    // allow CPU to write in buffer
+	bd.Usage = D3D11_USAGE_DYNAMIC;																	// write access access by CPU and GPU
+	bd.ByteWidth = sizeof(VERTEX) * 3;																// size is the VERTEX struct * 3
+	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;														// use as a vertex buffer
+	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;														// allow CPU to write in buffer
 
 	HRESULT hr;
 
-	if( FAILED( hr = dev->CreateBuffer(&bd, NULL, &pVBuffer) ) )       // create the buffer
+	if( FAILED( hr = dev->CreateBuffer(&bd, NULL, &pVBuffer) ) )									// create the buffer
 	{
 		throw GRAPHICS_EXCEPTION( hr,L"Creating Vertex Buffer" );
 	}
 
-												   // copy the vertices into the buffer
+
 	D3D11_MAPPED_SUBRESOURCE ms;
-	if( FAILED( hr = devcon->Map(pVBuffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms) ) )    // map the buffer
+	if( FAILED( hr = devcon->Map(pVBuffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms) ) )		// map the buffer
 	{
 		throw GRAPHICS_EXCEPTION( hr,L"Mapping Vertex Buffer" );
 	}
-	memcpy(ms.pData, OurVertices, sizeof(OurVertices));                 // copy the data
-	devcon->Unmap(pVBuffer.Get(), NULL);                                      // unmap the buffer
+	memcpy(ms.pData, OurVertices, sizeof(OurVertices));												// copy the data
+	devcon->Unmap(pVBuffer.Get(), NULL);															// unmap the buffer
 
 	/***********************************/
 	/******* Initialize Pipeline *******/
