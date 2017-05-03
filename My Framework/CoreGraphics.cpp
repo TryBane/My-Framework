@@ -126,9 +126,10 @@ void CoreGraphics::Initialize()
 	// create a triangle using the VERTEX struct
 	VERTEX OurVertices[] =
 	{
-		{0.0f, 0.5f, 0.0f, {1.0f, 0.0f, 0.0f, 1.0f}},
-		{0.45f, -0.5, 0.0f, {0.0f, 1.0f, 0.0f, 1.0f} },
-		{-0.45f, -0.5f, 0.0f, {0.0f, 0.0f, 1.0f, 1.0f}}
+		{-0.25f, 0.5f, 0.0f, {1.0f, 0.0f, 0.0f, 1.0f}},
+		{0.20f, -0.5, 0.0f, {0.0f, 1.0f, 0.0f, 1.0f} },
+		{-0.70f, -0.5f, 0.0f, {0.0f, 0.0f, 1.0f, 1.0f}},
+		{0.25f, 0.5f, 0.0f, {1.0f,1.0f,1.0f,1.0f } }
 	};
 
 
@@ -136,7 +137,7 @@ void CoreGraphics::Initialize()
 	D3D11_BUFFER_DESC bd = { 0 };
 
 	bd.Usage = D3D11_USAGE_DYNAMIC;																	// write access access by CPU and GPU
-	bd.ByteWidth = sizeof(VERTEX) * 3;																// size is the VERTEX struct * 3
+	bd.ByteWidth = sizeof(VERTEX) * 4;																// size is the VERTEX struct * 3
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;														// use as a vertex buffer
 	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;														// allow CPU to write in buffer
 
@@ -218,7 +219,7 @@ void CoreGraphics::Render()
 	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// draw 3 vertices, starting from vertex 0
-	devcon->Draw(3, 0);
+	devcon->Draw(4, 0);
 
 	HRESULT hr;
 	// switch the back buffer and the front buffer
