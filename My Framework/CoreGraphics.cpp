@@ -12,9 +12,9 @@
 #pragma comment( lib, "D3DCompiler.lib")
 
 // this function loads a file into an Array^
-std::vector<char*> LoadShaderFile(std::string File)
+std::vector<char> LoadShaderFile(std::string File)
 {
-	std::vector<char*> FileData;
+	std::vector<char> FileData;
 
 	// open the file
 	std::ifstream VertexFile(File, std::ios::in | std::ios::binary | std::ios::ate);
@@ -27,7 +27,7 @@ std::vector<char*> LoadShaderFile(std::string File)
 
 		// collect the file data
 		VertexFile.seekg(0, std::ios::beg);
-		VertexFile.read(FileData[0], Length);
+		VertexFile.read(FileData.data(), Length);
 		VertexFile.close();
 	}
 
@@ -105,7 +105,7 @@ CoreGraphics::CoreGraphics( WindowKey& key )
 
 	devcon->RSSetViewports(1, &viewport);
 
-
+	Initialize();
 }
 
 CoreGraphics::~CoreGraphics()
@@ -163,42 +163,36 @@ void CoreGraphics::Initialize()
 	/******* Initialize Pipeline *******/
 	/***********************************/
 
-	// load and compile the two shaders
-	ID3D10Blob *VS, *PS;
-	/*
-	if( FAILED( hr = D3DCompile(0 ,0 ,"Shaders.shader", 0, 0, "VShader", "vs_4_0", 0, 0, &VS, 0) ) )
+	// load the shader files
+	std::vector<char> VSFile = LoadShaderFile("VertexShader.cso");
+	std::vector<char> PSFile = LoadShaderFile("PixelShader.cso");
+
+	// create the shader objects
+	if( FAILED( hr = dev->CreateVertexShader(VSFile.data(), VSFile.size(), nullptr, &pVS) ) )
 	{
-		throw GRAPHICS_EXCEPTION( hr,L"Compiling Vertex Shader" );
+		throw GRAPHICS_EXCEPTION( hr,L"Creating the Vertex Shader" );
 	}
-	if( FAILED( hr = D3DCompile(0 ,0 ,"Shaders.shader", 0, 0, "PShader", "ps_4_0", 0, 0, &PS, 0) ) )
+	if( FAILED( hr = dev->CreatePixelShader(PSFile.data(), VSFile.size(), nullptr, &pPS) ) )
 	{
-		throw GRAPHICS_EXCEPTION( hr,L"Compiling Pixel Shader" );
-	}
-	
-	// encapsulate both shaders into shader objects
-	if( FAILED( hr = dev->CreateVertexShader(VS->GetBufferPointer(), VS->GetBufferSize(), NULL, &pVS) ) )
-	{
-		throw GRAPHICS_EXCEPTION( hr,L"Creating Vertex Shader" );
-	}
-	if( FAILED( hr = dev->CreatePixelShader(PS->GetBufferPointer(), PS->GetBufferSize(), NULL, &pPS) ) )
-	{
-		throw GRAPHICS_EXCEPTION( hr,L"Creating Pixel Shader" );
+		throw GRAPHICS_EXCEPTION( hr,L"Creating the Pixel Shader" );
 	}
 
-	// set the shader objects
-	devcon->VSSetShader(pVS.Get(), 0, 0);
-	devcon->PSSetShader(pPS.Get(), 0, 0);
+	// set the shader objects as the active shaders
+	devcon->VSSetShader(pVS.Get(), nullptr, 0);
+	devcon->PSSetShader(pPS.Get(), nullptr, 0);
 
-	// create the input layout object
+	// initialize input layout
 	D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 
-	//dev->CreateInputLayout(ied, 2, VS->GetBufferPointer(), VS->GetBufferSize(), &pLayout);
+	// create and set the input layout
+	if( FAILED( hr = dev->CreateInputLayout(ied, ARRAYSIZE(ied), VSFile.data(), VSFile.size(), &pLayout) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Creating the Input Layout" );
+	}
 	devcon->IASetInputLayout(pLayout.Get());
-	*/
 }
 
 // this function performs updates to the state of the game
