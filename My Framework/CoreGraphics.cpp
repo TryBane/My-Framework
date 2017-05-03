@@ -9,15 +9,14 @@
 #include <vector>
 
 #pragma comment( lib, "d3d11.lib")
-#pragma comment( lib, "D3DCompiler.lib")
 
-// this function loads a file into an Array^
-std::vector<char> LoadShaderFile(std::string File)
+// this function loads a file into a vector<char>
+std::vector<byte> LoadShaderFile(std::string File)
 {
-	std::vector<char> FileData;
+	std::vector<byte> FileData;
 
 	// open the file
-	std::ifstream VertexFile(File, std::ios::in | std::ios::binary | std::ios::ate);
+	std::ifstream VertexFile(File, std::ifstream::in | std::ifstream::binary | std::ifstream::ate);
 
 	// if open was successful
 	if(VertexFile.is_open())
@@ -26,8 +25,9 @@ std::vector<char> LoadShaderFile(std::string File)
 		int Length = (int)VertexFile.tellg();
 
 		// collect the file data
+		FileData = std::vector<byte>(Length);
 		VertexFile.seekg(0, std::ios::beg);
-		VertexFile.read(FileData.data(), Length);
+		VertexFile.read(reinterpret_cast<char*>(FileData.data()), Length);
 		VertexFile.close();
 	}
 
@@ -95,8 +95,7 @@ CoreGraphics::CoreGraphics( WindowKey& key )
 
 
 	// Set the viewport
-	D3D11_VIEWPORT viewport;
-	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
+	D3D11_VIEWPORT viewport = { 0 };
 
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
@@ -135,8 +134,7 @@ void CoreGraphics::Initialize()
 
 
 	// create the vertex buffer
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
+	D3D11_BUFFER_DESC bd = { 0 };
 
 	bd.Usage = D3D11_USAGE_DYNAMIC;                // write access access by CPU and GPU
 	bd.ByteWidth = sizeof(VERTEX) * 3;             // size is the VERTEX struct * 3
@@ -164,15 +162,15 @@ void CoreGraphics::Initialize()
 	/***********************************/
 
 	// load the shader files
-	std::vector<char> VSFile = LoadShaderFile("VertexShader.cso");
-	std::vector<char> PSFile = LoadShaderFile("PixelShader.cso");
+	std::vector<byte> VSFile = LoadShaderFile("FramebufferVS.cso");
+	std::vector<byte> PSFile = LoadShaderFile("FramebufferPS.cso");
 
 	// create the shader objects
 	if( FAILED( hr = dev->CreateVertexShader(VSFile.data(), VSFile.size(), nullptr, &pVS) ) )
 	{
 		throw GRAPHICS_EXCEPTION( hr,L"Creating the Vertex Shader" );
 	}
-	if( FAILED( hr = dev->CreatePixelShader(PSFile.data(), VSFile.size(), nullptr, &pPS) ) )
+	if( FAILED( hr = dev->CreatePixelShader(PSFile.data(), PSFile.size(), nullptr, &pPS) ) )
 	{
 		throw GRAPHICS_EXCEPTION( hr,L"Creating the Pixel Shader" );
 	}
@@ -185,6 +183,7 @@ void CoreGraphics::Initialize()
 	D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"COLOR",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
 	// create and set the input layout
@@ -210,6 +209,17 @@ void CoreGraphics::Render()
 	// clear the back buffer to a deep blue
 	float color[4] = {0.0f, 0.2f, 0.4f, 1.0f};
 	devcon->ClearRenderTargetView(backbuffer.Get(), color);
+
+	// set the vertex buffer
+	UINT stride = sizeof(VERTEX);
+	UINT offset = 0;
+	devcon->IASetVertexBuffers(0, 1, pVBuffer.GetAddressOf(), &stride, &offset);
+
+	// set the primitive topology
+	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	// draw 3 vertices, starting from vertex 0
+	devcon->Draw(3, 0);
 
 	HRESULT hr;
 	// switch the back buffer and the front buffer
