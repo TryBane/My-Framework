@@ -11,7 +11,7 @@
 struct VERTEX
 {
 	float X, Y, Z;			// vertex position
-	float Color[4];		// vertex color
+	float Color[4];			// vertex color
 };
 
 class CoreGraphics
