@@ -24,11 +24,9 @@
     <ClCompile Include="CoreGraphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Shaders.shader">
+    <ClCompile Include="DXErr.cpp">
       <Filter>Source Files</Filter>
-    </None>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">
@@ -37,5 +35,19 @@
     <ClInclude Include="CoreGraphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="My Exceptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DXErr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="VertexShader.hlsl">
+      <Filter>Source Files</Filter>
+    </FxCompile>
+    <FxCompile Include="PixelShader.hlsl">
+      <Filter>Source Files</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

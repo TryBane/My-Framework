@@ -22,6 +22,7 @@ class CoreWindow : public WindowKey
 {
 public:
 	CoreWindow( HINSTANCE hInst,wchar_t* lpCmdLine);
+	void DisplayMessage( const std::wstring& title,const std::wstring& message ) const;
 
 	bool readMessage();
 private:

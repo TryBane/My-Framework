@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "My Exceptions.h"
 
 CoreWindow::CoreWindow( HINSTANCE hInst,wchar_t* lpCmdLine)
 	:
@@ -14,24 +15,24 @@ CoreWindow::CoreWindow( HINSTANCE hInst,wchar_t* lpCmdLine)
 	RegisterClassEx( &wc );
 
 	// calculate the size of the client area
-	RECT wr = {0, 0, CoreGraphics::ScreenWidth, CoreGraphics::ScreenHeight};    // set the size, but not the position
-	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);    // adjust the size
+	RECT wr = {0, 0, CoreGraphics::ScreenWidth, CoreGraphics::ScreenHeight};	// set the size, but not the position
+	AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);							// adjust the size
 
 	// create the window and use the result as the handle
 	window = CreateWindowEx(NULL,
-		wndClassName,    // name of the window class
-		L"My Framework",    // title of the window
-		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,    // window style
-		CoreGraphics::ScreenOriginx,    // x-position of the window
-		CoreGraphics::ScreenOriginy,    // y-position of the window
-		wr.right - wr.left,    // width of the window
-		wr.bottom - wr.top,    // height of the window
-		nullptr,    // we have no parent window, NULL
-		nullptr,    // we aren't using menus, NULL
-		hInst,    // application handle
-		this);    // used with multiple windows, NULL
+		wndClassName,															// name of the window class
+		L"My Framework",														// title of the window
+		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,								// window style
+		CoreGraphics::ScreenOriginx,											// x-position of the window
+		CoreGraphics::ScreenOriginy,											// y-position of the window
+		wr.right - wr.left,														// width of the window
+		wr.bottom - wr.top,														// height of the window
+		nullptr,																// we have no parent window, NULL
+		nullptr,																// we aren't using menus, NULL
+		hInst,																	// application handle
+		this);																	// used with multiple windows, NULL
 
-				  // display the window on the screen
+	// display the window on the screen
 	ShowWindow(window,SW_SHOWDEFAULT);
 }
 
@@ -54,6 +55,11 @@ bool CoreWindow::readMessage()
 
 	}
 	return true;
+}
+
+void CoreWindow::DisplayMessage( const std::wstring& title,const std::wstring& message ) const
+{
+	MessageBox( window,message.c_str(),title.c_str(),MB_OK );
 }
 
 // this is the main message handler for the program
