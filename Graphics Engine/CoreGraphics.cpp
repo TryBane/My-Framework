@@ -119,42 +119,31 @@ CoreGraphics::~CoreGraphics()
 
 void CoreGraphics::Initialize()
 {
+	HRESULT hr;
+
 	/***********************************/
 	/******* Initialize Graphics *******/
 	/***********************************/
 
 	// create a triangle using the VERTEX struct
-	VERTEX OurVertices[] =
+	VERTEX OurVertices[ 3 ] =
 	{
 		{-0.25f, 0.5f, 0.0f, {1.0f, 0.0f, 0.0f, 1.0f}},
 		{0.20f, -0.5, 0.0f, {0.0f, 1.0f, 0.0f, 1.0f} },
 		{-0.70f, -0.5f, 0.0f, {0.0f, 0.0f, 1.0f, 1.0f}}
 	};
 
-
 	// create the vertex buffer
-	D3D11_BUFFER_DESC bd = { 0 };
+	D3D11_BUFFER_DESC bd = {0};
+	bd.ByteWidth = sizeof(VERTEX) * ARRAYSIZE(OurVertices);
+	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
-	bd.Usage = D3D11_USAGE_DYNAMIC;																	// write access access by CPU and GPU
-	bd.ByteWidth = sizeof(VERTEX) * 3;																// size is the VERTEX struct * 3
-	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;														// use as a vertex buffer
-	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;														// allow CPU to write in buffer
+	D3D11_SUBRESOURCE_DATA srd = {OurVertices, 0, 0};
 
-	HRESULT hr;
-
-	if( FAILED( hr = dev->CreateBuffer(&bd, NULL, &pVBuffer) ) )									// create the buffer
+	if( FAILED( hr = dev->CreateBuffer( &bd,&srd,&pVBuffer ) ) )
 	{
-		throw GRAPHICS_EXCEPTION( hr,L"Creating Vertex Buffer" );
+		throw GRAPHICS_EXCEPTION( hr,L"Creating the Vertex Buffer");
 	}
-
-
-	D3D11_MAPPED_SUBRESOURCE ms;
-	if( FAILED( hr = devcon->Map(pVBuffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms) ) )		// map the buffer
-	{
-		throw GRAPHICS_EXCEPTION( hr,L"Mapping Vertex Buffer" );
-	}
-	memcpy(ms.pData, OurVertices, sizeof(OurVertices));												// copy the data
-	devcon->Unmap(pVBuffer.Get(), NULL);															// unmap the buffer
 
 	/***********************************/
 	/******* Initialize Pipeline *******/
