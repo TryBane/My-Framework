@@ -36,7 +36,9 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 	}
 	catch( const MyException& e )
 	{
-		
+		const std::wstring eMsg = e.GetErrorMessage() + 
+			L"\n\nException caught at Windows message loop.";
+		MessageBox(nullptr, eMsg.c_str(),e.GetExceptionType().c_str(),MB_OK );
 	}
 
 	// return this part of the WM_QUIT message to Windows
