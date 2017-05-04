@@ -6,6 +6,8 @@
 
 #pragma comment( lib, "d3d11.lib")
 
+using namespace DirectX::Colors;
+
 // this function loads a file into a vector<char>
 std::vector<byte> LoadShaderFile(std::string File)
 {
@@ -33,6 +35,11 @@ std::vector<byte> LoadShaderFile(std::string File)
 // this function initializes and prepares Direct3D for use
 CoreGraphics::CoreGraphics( WindowKey& key )
 {
+	vertices[0] = {-0.70f, -0.5f, 0.0f, 0.0f};
+	vertices[1] = {-0.70f,  0.5f, 0.0f, 0.0f};
+	vertices[2] = { 0.75f, -0.5f, 0.0f, 0.0f};
+	vertices[3] = { 0.75f,  0.5f, 0.0f, 0.0f};
+
 	assert( key.window != nullptr );
 
 	// set up the swap chain description
@@ -126,11 +133,12 @@ void CoreGraphics::Initialize()
 	/***********************************/
 
 	// create a triangle using the VERTEX struct
-	VERTEX OurVertices[ 3 ] =
+	VERTEX OurVertices[ 4 ] =
 	{
-		{-0.25f, 0.5f, 0.0f, {1.0f, 0.0f, 0.0f, 1.0f}},
-		{0.20f, -0.5, 0.0f, {0.0f, 1.0f, 0.0f, 1.0f} },
-		{-0.70f, -0.5f, 0.0f, {0.0f, 0.0f, 1.0f, 1.0f}}
+		{vertices[0], Blue},
+		{vertices[1], Red},
+		{vertices[2], Green},
+		{vertices[3], White}
 	};
 
 	// create the vertex buffer
@@ -171,7 +179,7 @@ void CoreGraphics::Initialize()
 	D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"COLOR",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
 	// create and set the input layout
@@ -204,10 +212,10 @@ void CoreGraphics::Render()
 	devcon->IASetVertexBuffers(0, 1, pVBuffer.GetAddressOf(), &stride, &offset);
 
 	// set the primitive topology
-	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	// draw 3 vertices, starting from vertex 0
-	devcon->Draw(3, 0);
+	devcon->Draw(4, 0);
 
 	HRESULT hr;
 	// switch the back buffer and the front buffer

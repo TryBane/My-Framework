@@ -4,14 +4,16 @@
 #include <vector>
 #include "My Exceptions.h"
 #include "DXerr.h"
+#include <DirectXMath.h>
+#include <DirectXColors.h>
 
 #define GRAPHICS_EXCEPTION( hr, error ) CoreGraphics::GraphicsException( hr, error, _CRT_WIDE(__FILE__),__LINE__)
 
 // a struct to represent a single vertex
 struct VERTEX
 {
-	float X, Y, Z;			// vertex position
-	float Color[4];			// vertex color
+	DirectX::XMVECTOR position;			// vertex position
+	DirectX::XMVECTORF32 Color;			// vertex color
 };
 
 class CoreGraphics
@@ -37,6 +39,12 @@ public:
 	void Update();
 	void Render();
 private:
+	static const DirectX::XMFLOAT4 MakeRGBA(float r,float g,float b,float a)
+	{
+		const DirectX::XMFLOAT4 temp = { r,g,b,a };
+		return temp;
+	}
+private:
 	Microsoft::WRL::ComPtr<ID3D11Device> dev;					// the device interface
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> devcon;			// the device context interface
 	Microsoft::WRL::ComPtr<IDXGISwapChain> swapchain;			// the swap chain interface
@@ -52,4 +60,6 @@ public:
 	static constexpr int ScreenWidth = 1200u;
 	static constexpr int ScreenHeight = 900u;
 
+private:
+	DirectX::XMVECTOR vertices[4];
 };
