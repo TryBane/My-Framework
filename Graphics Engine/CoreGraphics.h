@@ -61,5 +61,5 @@ public:
 	static constexpr int ScreenHeight = 900u;
 
 private:
-	DirectX::XMVECTOR vertices[4];
+	std::vector<DirectX::XMVECTOR> vertices;
 };

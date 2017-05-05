@@ -35,10 +35,10 @@ std::vector<byte> LoadShaderFile(std::string File)
 // this function initializes and prepares Direct3D for use
 CoreGraphics::CoreGraphics( WindowKey& key )
 {
-	vertices[0] = {-0.70f, -0.5f, 0.0f, 0.0f};
-	vertices[1] = {-0.70f,  0.5f, 0.0f, 0.0f};
-	vertices[2] = { 0.75f, -0.5f, 0.0f, 0.0f};
-	vertices[3] = { 0.75f,  0.5f, 0.0f, 0.0f};
+	vertices.push_back({-0.70f, -0.5f, 0.0f, 0.0f});
+	vertices.push_back({-0.70f,  0.5f, 0.0f, 0.0f});
+	vertices.push_back({ 0.75f, -0.5f, 0.0f, 0.0f});
+	vertices.push_back({ 0.75f,  0.5f, 0.0f, 0.0f});
 
 	assert( key.window != nullptr );
 
@@ -133,7 +133,7 @@ void CoreGraphics::Initialize()
 	/***********************************/
 
 	// create a triangle using the VERTEX struct
-	VERTEX OurVertices[ 4 ] =
+	std::vector<VERTEX> OurVertices=
 	{
 		{vertices[0], Blue},
 		{vertices[1], Red},
@@ -143,10 +143,10 @@ void CoreGraphics::Initialize()
 
 	// create the vertex buffer
 	D3D11_BUFFER_DESC bd = {0};
-	bd.ByteWidth = sizeof(VERTEX) * ARRAYSIZE(OurVertices);
+	bd.ByteWidth = sizeof(VERTEX) * OurVertices.size();
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
-	D3D11_SUBRESOURCE_DATA srd = {OurVertices, 0, 0};
+	D3D11_SUBRESOURCE_DATA srd = {&OurVertices[0], 0, 0};
 
 	if( FAILED( hr = dev->CreateBuffer( &bd,&srd,&pVBuffer ) ) )
 	{
