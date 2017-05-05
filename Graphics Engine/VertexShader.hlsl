@@ -17,6 +17,7 @@ VOut main(float4 position : POSITION, float4 color : COLOR)
 	output.position.x += Offset.x;
 	output.position.y += Offset.y;
 	output.position.xy *= Offset.z;
+	output.position.w += Offset.w;
     output.color = color;
 
     return output;
