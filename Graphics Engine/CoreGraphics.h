@@ -12,7 +12,7 @@
 // a struct to represent a single vertex
 struct VERTEX
 {
-	DirectX::XMFLOAT3 position;			// vertex position
+	DirectX::XMVECTORF32 position;			// vertex position
 	DirectX::XMVECTORF32 Color;			// vertex color
 };
 
@@ -53,7 +53,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> pPS;				// the pointer to the pixel shader
 	Microsoft::WRL::ComPtr<ID3D11Buffer> pVBuffer;				// the pointer to the vertex buffer
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> backbuffer;	// the pointer to our back buffer
-	Microsoft::WRL::ComPtr<ID3D11Buffer> constantbuffer;            // the constant buffer interface
+	Microsoft::WRL::ComPtr<ID3D11Buffer> constantbuffer;        // the constant buffer interface
 
 public:
 	static constexpr int ScreenOriginx = 300;
@@ -62,7 +62,7 @@ public:
 	static constexpr int ScreenHeight = 900u;
 
 private:
-	std::vector<DirectX::XMFLOAT3> vertices;
+	std::vector<DirectX::XMVECTORF32> vertices;
 	std::vector<VERTEX> OurVertices;
 	DirectX::XMMATRIX transform = { {5.0f,0.0f,0.0f,1.5f},{0.0f,1.0f,0.0f,1.5f},{0.0f,0.0f,1.0f,1.5f},{0.0f,0.0f,0.0f,1.5f} };
 	OFFSET Offset;
