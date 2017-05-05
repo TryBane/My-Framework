@@ -1,6 +1,6 @@
 cbuffer ConstantBuffer
 {
-	float4 Offset;
+	float4x4 transMatrix;
 };
 
 struct VOut
@@ -13,11 +13,12 @@ VOut main(float4 position : POSITION, float4 color : COLOR)
 {
     VOut output;
 
-    output.position = position;
-	output.position.x += Offset.x;
-	output.position.y += Offset.y;
-	output.position.xy *= Offset.z;
-	output.position.w += Offset.w;
+	output.position = mul(transMatrix, position);    // transform the vertex from 3D to 2D
+    //output.position = position;
+	//output.position.x += offset.x;
+	//output.position.y += offset.y;
+	//output.position.xy *= offset.z;
+	//output.position.w += offset.w;
     output.color = color;
 
     return output;

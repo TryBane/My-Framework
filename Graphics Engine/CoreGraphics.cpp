@@ -37,10 +37,14 @@ CoreGraphics::CoreGraphics( WindowKey& key,Keyboard& Keyboard )
 	:
 	keyboard( Keyboard )
 {
-	vertices.push_back({-0.70f, -0.5f, 0.0f});
-	vertices.push_back({-0.70f,  0.5f, 0.0f});
-	vertices.push_back({ 0.75f, -0.5f, 0.0f});
-	vertices.push_back({ 0.75f,  0.5f, 0.0f});
+	vertices.push_back({-0.25f,  0.25f,-0.25f});
+	vertices.push_back({-0.25f, -0.25f,-0.25f});
+	vertices.push_back({ 0.25f,  0.25f,-0.25f});
+	vertices.push_back({ 0.25f, -0.25f,-0.25f});
+	vertices.push_back({-0.25f, -0.25f, 0.25f});
+	vertices.push_back({-0.25f,  0.25f, 0.25f});
+	vertices.push_back({ 0.25f,  0.25f, 0.25f});
+	vertices.push_back({ 0.25f, -0.25f, 0.25f});
 
 	Offset.X = 0.5f;
 	Offset.Y = 0.2f;
@@ -118,6 +122,8 @@ CoreGraphics::CoreGraphics( WindowKey& key,Keyboard& Keyboard )
 	devcon->RSSetViewports(1, &viewport);
 
 	Initialize();
+
+	dTime = 0.0f;
 }
 
 CoreGraphics::~CoreGraphics()
@@ -142,15 +148,32 @@ void CoreGraphics::Initialize()
 	// create a triangle using the VERTEX struct
 	std::vector<VERTEX> OurVertices=
 	{
-		{vertices[0], Blue},
-		{vertices[1], Red},
-		{vertices[2], Green},
-		{vertices[3], White}
+		{vertices[1],White},
+		{vertices[0],Blue},
+		{vertices[3],Black},
+		{vertices[2],Red},
+		{vertices[7],Green},
+		{vertices[6],Teal},
+		{vertices[4],Magenta},
+		{vertices[5],Gold},
+		{vertices[1],White},
+		{vertices[0],Blue},
+
+		{vertices[0],Blue},
+		{vertices[5],Gold},
+		{vertices[2],Red},
+		{vertices[6],Teal},
+
+		{vertices[4],Magenta},
+		{vertices[1],White},
+		{vertices[7],Green},
+		{vertices[3],Black}
+
 	};
 
 	// create the vertex buffer
 	D3D11_BUFFER_DESC bd = { 0 };
-	bd.ByteWidth = sizeof(VERTEX) * OurVertices.size();
+	bd.ByteWidth = (UINT)( sizeof(VERTEX) * OurVertices.size() );
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
 	D3D11_SUBRESOURCE_DATA srd = {&OurVertices[0], 0, 0};
@@ -193,7 +216,7 @@ void CoreGraphics::Initialize()
 
 	bd = { 0 };
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = 16;
+	bd.ByteWidth = 64;
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
 	// Create Constant Buffer
@@ -203,9 +226,33 @@ void CoreGraphics::Initialize()
 	}
 }
 
+void CoreGraphics::SetMatrix()
+{
+	// calculate the world transformation
+	DirectX::XMMATRIX matWorld = DirectX::XMMatrixRotationY(dTime);
+
+	// calculate the view transformation
+	DirectX::XMVECTOR vecCamPosition = DirectX::XMVectorSet(1.5f, 0.5f, 1.5f, 0);
+	DirectX::XMVECTOR vecCamLookAt = DirectX::XMVectorSet(0, 0, 0, 0);
+	DirectX::XMVECTOR vecCamUp = DirectX::XMVectorSet(0, 1, 0, 0);
+	DirectX::XMMATRIX matView = DirectX::XMMatrixLookAtLH(vecCamPosition, vecCamLookAt, vecCamUp);
+
+	// calculate the projection transformation
+	DirectX::XMMATRIX matProjection = DirectX::XMMatrixPerspectiveFovLH(
+		DirectX::XMConvertToRadians(45),                                      // the field of view
+		(float)ScreenWidth / (float)ScreenHeight,  // aspect ratio
+		1,                                                           // the near view-plane
+		100);                                                        // the far view-plane
+
+																	 // calculate the final matrix
+	finalMatrix = matWorld * matView * matProjection;
+
+}
+
 // this function performs updates to the state of the game
 void CoreGraphics::Update()
 {
+	dTime += 0.05f;
 	if( keyboard.KeyIsPressed( VK_RIGHT ) )
 	{
 		Offset.X += 0.01f;
@@ -222,6 +269,14 @@ void CoreGraphics::Update()
 	{
 		Offset.Y -= 0.01f;
 	}
+	if( keyboard.KeyIsPressed( VK_SPACE ) )
+	{
+		Offset.Z -= 0.01f;
+	}
+	if( keyboard.KeyIsPressed( VK_SHIFT ) )
+	{
+		Offset.Z += 0.1f;
+	}
 }
 
 // this function renders a single frame of 3D graphics
@@ -236,12 +291,14 @@ void CoreGraphics::Render()
 
 
 	// Set start and end for Vertex Drawing
-	int end = vertices.size();
+	int end = (int)vertices.size();
 	int start = 0;
 
 	// set the vertex buffer
 	UINT stride = sizeof(VERTEX);
 	UINT offset = 0;
+
+	SetMatrix();
 
 	// set the shader objects as the active shaders
 	// define the contents to be stored in the constant buffer
@@ -251,10 +308,13 @@ void CoreGraphics::Render()
 	devcon->VSSetShader(pVS.Get(), nullptr, 0);
 	devcon->PSSetShader(pPS.Get(), nullptr, 0);
 	devcon->VSSetConstantBuffers(0, 1, constantbuffer.GetAddressOf());
-	devcon->UpdateSubresource(constantbuffer.Get(), 0, 0, &Offset, 0, 0);
+	// load the data into the constant buffer
+	devcon->UpdateSubresource(constantbuffer.Get(), 0, 0, &finalMatrix, 0, 0);
 	devcon->IASetVertexBuffers(0, 1, pVBuffer.GetAddressOf(), &stride, &offset);
 	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	devcon->Draw(end, start);
+	devcon->Draw(10, start);
+	devcon->Draw(4, 10 );
+	devcon->Draw(4, 14 );
 	devcon->IASetInputLayout(pLayout.Get());
 
 	HRESULT hr;

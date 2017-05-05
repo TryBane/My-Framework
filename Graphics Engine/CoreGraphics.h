@@ -46,6 +46,8 @@ public:
 	void Update();
 	void Render();
 private:
+	void SetMatrix();
+private:
 	Microsoft::WRL::ComPtr<ID3D11Device> dev;					// the device interface
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> devcon;			// the device context interface
 	Microsoft::WRL::ComPtr<IDXGISwapChain> swapchain;			// the swap chain interface
@@ -65,6 +67,9 @@ public:
 private:
 	std::vector<DirectX::XMVECTORF32> vertices;
 	std::vector<VERTEX> OurVertices;
+	DirectX::XMMATRIX finalMatrix;
 	OFFSET Offset;
 	Keyboard& keyboard;
+
+	float dTime;
 };
