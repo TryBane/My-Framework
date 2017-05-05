@@ -65,7 +65,6 @@ public:
 private:
 	std::vector<DirectX::XMVECTORF32> vertices;
 	std::vector<VERTEX> OurVertices;
-	DirectX::XMMATRIX transform = { {5.0f,0.0f,0.0f,1.5f},{0.0f,1.0f,0.0f,1.5f},{0.0f,0.0f,1.0f,1.5f},{0.0f,0.0f,0.0f,1.5f} };
 	OFFSET Offset;
 	Keyboard& keyboard;
 };
