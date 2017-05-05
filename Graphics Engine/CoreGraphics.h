@@ -6,6 +6,7 @@
 #include "DXerr.h"
 #include <DirectXMath.h>
 #include <DirectXColors.h>
+#include "Keyboard.h"
 
 #define GRAPHICS_EXCEPTION( hr, error ) CoreGraphics::GraphicsException( hr, error, _CRT_WIDE(__FILE__),__LINE__)
 
@@ -37,7 +38,7 @@ public:
 		HRESULT hr;
 	};
 public:
-	CoreGraphics( class WindowKey& key );
+	CoreGraphics( class WindowKey& key,Keyboard& keyboard );
 	CoreGraphics( const CoreGraphics& ) = delete;
 	CoreGraphics& operator=( const CoreGraphics& ) = delete;
 	~CoreGraphics();
@@ -66,4 +67,5 @@ private:
 	std::vector<VERTEX> OurVertices;
 	DirectX::XMMATRIX transform = { {5.0f,0.0f,0.0f,1.5f},{0.0f,1.0f,0.0f,1.5f},{0.0f,0.0f,1.0f,1.5f},{0.0f,0.0f,0.0f,1.5f} };
 	OFFSET Offset;
+	Keyboard& keyboard;
 };

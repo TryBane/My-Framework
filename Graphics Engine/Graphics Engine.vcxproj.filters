@@ -19,6 +19,12 @@
     <Filter Include="Header Files\Core Framework">
       <UniqueIdentifier>{4cbb1480-e4af-465a-a32d-4d427268f14e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Core Framework\Input">
+      <UniqueIdentifier>{1e2de3ed-5099-4406-8552-2537ed662cdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core Framework\Input">
+      <UniqueIdentifier>{898c1c86-7315-4ffa-ab62-57aa4222a926}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CoreGraphics.cpp">
@@ -33,6 +39,9 @@
     <ClCompile Include="Window.cpp">
       <Filter>Source Files\Core Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>Source Files\Core Framework\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CoreGraphics.h">
@@ -46,6 +55,9 @@
     </ClInclude>
     <ClInclude Include="Window.h">
       <Filter>Header Files\Core Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>Header Files\Core Framework\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

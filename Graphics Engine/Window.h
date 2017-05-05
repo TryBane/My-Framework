@@ -4,11 +4,13 @@
 #include <assert.h>
 #include <string>
 #include "CoreGraphics.h"
+#include "Keyboard.h"
 
+static bool rightIsPressed = false;
 
 class WindowKey
 {
-	friend CoreGraphics::CoreGraphics( WindowKey& );
+	friend CoreGraphics::CoreGraphics( WindowKey&,Keyboard& );
 public:
 	WindowKey( const WindowKey& ) = delete;
 	WindowKey& operator=( WindowKey& ) = delete;
@@ -31,6 +33,7 @@ private:
 
 	LRESULT CoreWindow::HandleMsg( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 public:
+	Keyboard keyboard;
 private:
 	static constexpr wchar_t* wndClassName = L"My Framework";
 	HINSTANCE hInst = nullptr;

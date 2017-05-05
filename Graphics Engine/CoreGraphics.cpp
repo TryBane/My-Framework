@@ -33,7 +33,9 @@ std::vector<byte> LoadShaderFile(std::string File)
 }
 
 // this function initializes and prepares Direct3D for use
-CoreGraphics::CoreGraphics( WindowKey& key )
+CoreGraphics::CoreGraphics( WindowKey& key,Keyboard& Keyboard )
+	:
+	keyboard( Keyboard )
 {
 	vertices.push_back({-0.70f, -0.5f, 0.0f});
 	vertices.push_back({-0.70f,  0.5f, 0.0f});
@@ -204,7 +206,22 @@ void CoreGraphics::Initialize()
 // this function performs updates to the state of the game
 void CoreGraphics::Update()
 {
-	Offset.X += 0.01f;
+	if( keyboard.KeyIsPressed( VK_RIGHT ) )
+	{
+		Offset.X += 0.01f;
+	}
+	if( keyboard.KeyIsPressed( VK_LEFT ) )
+	{
+		Offset.X -= 0.01f;
+	}
+	if( keyboard.KeyIsPressed( VK_UP ) )
+	{
+		Offset.Y += 0.01f;
+	}
+	if( keyboard.KeyIsPressed( VK_DOWN ) )
+	{
+		Offset.Y -= 0.01f;
+	}
 }
 
 // this function renders a single frame of 3D graphics

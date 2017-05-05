@@ -4,8 +4,6 @@
 #include "Window.h"
 #include "CoreGraphics.h"
 
-// the WindowProc function prototype
-
 // the entry point for any Windows program
 int WINAPI wWinMain(HINSTANCE hInstance,
 	HINSTANCE,
@@ -18,7 +16,7 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 
 		try
 		{
-			CoreGraphics gfx( window );
+			CoreGraphics gfx( window,window.keyboard );
 
 			// Enter the infinite message loop
 			while( window.readMessage( ) )

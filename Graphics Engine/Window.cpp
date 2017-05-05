@@ -39,7 +39,7 @@ CoreWindow::CoreWindow( HINSTANCE hInst,wchar_t* lpCmdLine)
 bool CoreWindow::readMessage()
 {
 	MSG msg = {0};
-	while( PeekMessage( &msg,NULL,0,0,PM_REMOVE ) )
+	while( PeekMessage( &msg,nullptr,0,0,PM_REMOVE ) )
 	{
 		// translate keystroke messages into the right format
 		TranslateMessage( &msg );
@@ -104,6 +104,17 @@ LRESULT CoreWindow::HandleMsg( HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		PostQuitMessage(0);
 		return 0;
 	} break;
+	case WM_KEYDOWN:
+	{
+		if( !(lParam& 0x40000000 ) )
+		{
+			keyboard.OnKeyPressed( static_cast<unsigned char>(wParam) );
+		}
+	}
+	break;
+	case WM_KEYUP:
+		keyboard.OnKeyReleased( static_cast<unsigned char>(wParam) );
+		break;
 	}
 
 	// Handle any messages the switch statement didn't
