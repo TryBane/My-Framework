@@ -214,8 +214,10 @@ void CoreGraphics::Render()
 	// set the primitive topology
 	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	// draw 3 vertices, starting from vertex 0
-	devcon->Draw(4, 0);
+	// draw all vertices from start->end
+	int end = vertices.size();
+	int start = 0;
+	devcon->Draw(end, start);
 
 	HRESULT hr;
 	// switch the back buffer and the front buffer
