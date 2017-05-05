@@ -147,7 +147,7 @@ void CoreGraphics::Initialize()
 	};
 
 	// create the vertex buffer
-	D3D11_BUFFER_DESC bd = {0};
+	D3D11_BUFFER_DESC bd = { 0 };
 	bd.ByteWidth = sizeof(VERTEX) * OurVertices.size();
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
@@ -189,22 +189,22 @@ void CoreGraphics::Initialize()
 		throw GRAPHICS_EXCEPTION( hr,L"Creating the Input Layout" );
 	}
 
-
+	bd = { 0 };
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.ByteWidth = 16;
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
-	dev->CreateBuffer(&bd, nullptr, &constantbuffer);
-
-	devcon->VSSetConstantBuffers(0, 1, constantbuffer.GetAddressOf());
-
-	devcon->IASetInputLayout(pLayout.Get());
+	// Create Constant Buffer
+	if( FAILED( hr = dev->CreateBuffer(&bd, nullptr, &constantbuffer) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Creating the Constant Buffer" );
+	}
 }
 
 // this function performs updates to the state of the game
 void CoreGraphics::Update()
 {
-	Offset.X += .01;
+	Offset.X += 0.01f;
 }
 
 // this function renders a single frame of 3D graphics
@@ -217,30 +217,31 @@ void CoreGraphics::Render()
 	float color[4] = {0.0f, 0.2f, 0.4f, 1.0f};
 	devcon->ClearRenderTargetView(backbuffer.Get(), color);
 
+
+	// Set start and end for Vertex Drawing
+	int end = vertices.size();
+	int start = 0;
+
 	// set the vertex buffer
 	UINT stride = sizeof(VERTEX);
 	UINT offset = 0;
-	devcon->IASetVertexBuffers(0, 1, pVBuffer.GetAddressOf(), &stride, &offset);
 
 	// set the shader objects as the active shaders
+	// define the contents to be stored in the constant buffer
+	// load the data into the constant buffer
+	// set the primitive topology
+	// draw all vertices from start->end
 	devcon->VSSetShader(pVS.Get(), nullptr, 0);
 	devcon->PSSetShader(pPS.Get(), nullptr, 0);
-
-	// set the primitive topology
-	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-
-	// define the contents to be stored in the constant buffer
-
-	// load the data into the constant buffer
+	devcon->VSSetConstantBuffers(0, 1, constantbuffer.GetAddressOf());
 	devcon->UpdateSubresource(constantbuffer.Get(), 0, 0, &Offset, 0, 0);
-
-	// draw all vertices from start->end
-	int end = vertices.size();
-	int start = 0;
+	devcon->IASetVertexBuffers(0, 1, pVBuffer.GetAddressOf(), &stride, &offset);
+	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	devcon->Draw(end, start);
+	devcon->IASetInputLayout(pLayout.Get());
 
 	HRESULT hr;
+
 	// switch the back buffer and the front buffer
 	if( FAILED( hr = swapchain->Present(1, 0) ) )
 	{
