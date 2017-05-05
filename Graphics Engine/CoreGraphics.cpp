@@ -35,10 +35,15 @@ std::vector<byte> LoadShaderFile(std::string File)
 // this function initializes and prepares Direct3D for use
 CoreGraphics::CoreGraphics( WindowKey& key )
 {
-	vertices.push_back({-0.70f, -0.5f, 0.0f, 0.0f});
-	vertices.push_back({-0.70f,  0.5f, 0.0f, 0.0f});
-	vertices.push_back({ 0.75f, -0.5f, 0.0f, 0.0f});
-	vertices.push_back({ 0.75f,  0.5f, 0.0f, 0.0f});
+	vertices.push_back({-0.70f, -0.5f, 0.0f});
+	vertices.push_back({-0.70f,  0.5f, 0.0f});
+	vertices.push_back({ 0.75f, -0.5f, 0.0f});
+	vertices.push_back({ 0.75f,  0.5f, 0.0f});
+
+	Offset.X = 0.5f;
+	Offset.Y = 0.2f;
+	Offset.Z = 0.7f;
+	Offset.W = 0.0f;
 
 	assert( key.window != nullptr );
 
@@ -171,10 +176,6 @@ void CoreGraphics::Initialize()
 		throw GRAPHICS_EXCEPTION( hr,L"Creating the Pixel Shader" );
 	}
 
-	// set the shader objects as the active shaders
-	devcon->VSSetShader(pVS.Get(), nullptr, 0);
-	devcon->PSSetShader(pPS.Get(), nullptr, 0);
-
 	// initialize input layout
 	D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
@@ -187,13 +188,23 @@ void CoreGraphics::Initialize()
 	{
 		throw GRAPHICS_EXCEPTION( hr,L"Creating the Input Layout" );
 	}
+
+
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = 16;
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
+	dev->CreateBuffer(&bd, nullptr, &constantbuffer);
+
+	devcon->VSSetConstantBuffers(0, 1, constantbuffer.GetAddressOf());
+
 	devcon->IASetInputLayout(pLayout.Get());
 }
 
 // this function performs updates to the state of the game
 void CoreGraphics::Update()
 {
-
+	Offset.X += .01;
 }
 
 // this function renders a single frame of 3D graphics
@@ -211,8 +222,18 @@ void CoreGraphics::Render()
 	UINT offset = 0;
 	devcon->IASetVertexBuffers(0, 1, pVBuffer.GetAddressOf(), &stride, &offset);
 
+	// set the shader objects as the active shaders
+	devcon->VSSetShader(pVS.Get(), nullptr, 0);
+	devcon->PSSetShader(pPS.Get(), nullptr, 0);
+
 	// set the primitive topology
 	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+
+	// define the contents to be stored in the constant buffer
+
+	// load the data into the constant buffer
+	devcon->UpdateSubresource(constantbuffer.Get(), 0, 0, &Offset, 0, 0);
 
 	// draw all vertices from start->end
 	int end = vertices.size();

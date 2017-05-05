@@ -12,8 +12,14 @@
 // a struct to represent a single vertex
 struct VERTEX
 {
-	DirectX::XMVECTOR position;			// vertex position
+	DirectX::XMFLOAT3 position;			// vertex position
 	DirectX::XMVECTORF32 Color;			// vertex color
+};
+
+// a struct defining the contents of our constant buffer
+struct OFFSET
+{
+	float X, Y, Z, W;
 };
 
 class CoreGraphics
@@ -39,12 +45,6 @@ public:
 	void Update();
 	void Render();
 private:
-	static const DirectX::XMFLOAT4 MakeRGBA(float r,float g,float b,float a)
-	{
-		const DirectX::XMFLOAT4 temp = { r,g,b,a };
-		return temp;
-	}
-private:
 	Microsoft::WRL::ComPtr<ID3D11Device> dev;					// the device interface
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> devcon;			// the device context interface
 	Microsoft::WRL::ComPtr<IDXGISwapChain> swapchain;			// the swap chain interface
@@ -53,6 +53,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> pPS;				// the pointer to the pixel shader
 	Microsoft::WRL::ComPtr<ID3D11Buffer> pVBuffer;				// the pointer to the vertex buffer
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> backbuffer;	// the pointer to our back buffer
+	Microsoft::WRL::ComPtr<ID3D11Buffer> constantbuffer;            // the constant buffer interface
 
 public:
 	static constexpr int ScreenOriginx = 300;
@@ -61,5 +62,8 @@ public:
 	static constexpr int ScreenHeight = 900u;
 
 private:
-	std::vector<DirectX::XMVECTOR> vertices;
+	std::vector<DirectX::XMFLOAT3> vertices;
+	std::vector<VERTEX> OurVertices;
+	DirectX::XMMATRIX transform = { {5.0f,0.0f,0.0f,1.5f},{0.0f,1.0f,0.0f,1.5f},{0.0f,0.0f,1.0f,1.5f},{0.0f,0.0f,0.0f,1.5f} };
+	OFFSET Offset;
 };
