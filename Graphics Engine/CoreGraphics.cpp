@@ -3,7 +3,8 @@
 #include <fstream>
 #include <array>
 #include <vector>
-
+#include <iterator>
+#include "VertexList.h"
 #pragma comment( lib, "d3d11.lib")
 
 using namespace DirectX::Colors;
@@ -121,9 +122,12 @@ CoreGraphics::CoreGraphics( WindowKey& key,Keyboard& Keyboard )
 
 	devcon->RSSetViewports(1, &viewport);
 
+	AddVertices( OurVertices );
+
 	Initialize();
 
 	dTime = 0.0f;
+
 }
 
 CoreGraphics::~CoreGraphics()
@@ -146,37 +150,66 @@ void CoreGraphics::Initialize()
 	/***********************************/
 
 	// create a triangle using the VERTEX struct
-	std::vector<VERTEX> OurVertices=
+	//std::vector<VERTEX> OurVertices=
+	//{
+	//	{vertices[1],White},
+	//	{vertices[0],Blue},
+	//	{vertices[3],Black},
+	//	{vertices[2],Red},
+	//	{vertices[7],Green},
+	//	{vertices[6],Teal},
+	//	{vertices[4],Magenta},
+	//	{vertices[5],Gold},
+	//	{vertices[1],White},
+	//	{vertices[0],Blue},
+	//
+	//	{vertices[0],Blue},
+	//	{vertices[5],Gold},
+	//	{vertices[2],Red},
+	//	{vertices[6],Teal},
+	//
+	//	{vertices[4],Magenta},
+	//	{vertices[1],White},
+	//	{vertices[7],Green},
+	//	{vertices[3],Black}
+	//
+	//};
+
+	std::vector<short> VertexIndices =
 	{
-		{vertices[1],White},
-		{vertices[0],Blue},
-		{vertices[3],Black},
-		{vertices[2],Red},
-		{vertices[7],Green},
-		{vertices[6],Teal},
-		{vertices[4],Magenta},
-		{vertices[5],Gold},
-		{vertices[1],White},
-		{vertices[0],Blue},
-
-		{vertices[0],Blue},
-		{vertices[5],Gold},
-		{vertices[2],Red},
-		{vertices[6],Teal},
-
-		{vertices[4],Magenta},
-		{vertices[1],White},
-		{vertices[7],Green},
-		{vertices[3],Black}
-
+		0, 1, 2,    // side 1
+		2, 1, 3,
+		4, 0, 6,    // side 2
+		6, 0, 2,
+		7, 5, 6,    // side 3
+		6, 5, 4,
+		3, 1, 7,    // side 4
+		7, 1, 5,
+		4, 5, 0,    // side 5
+		0, 5, 1,
+		3, 7, 2,    // side 6
+		2, 7, 6,
 	};
+
+	// create the index buffer
+	D3D11_BUFFER_DESC ibd = {0};
+	ibd.ByteWidth = sizeof(short) * VertexIndices.size();
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+	D3D11_SUBRESOURCE_DATA isrd = {&VertexIndices[0], 0, 0};
+
+
+	if( FAILED( hr = dev->CreateBuffer(&ibd, &isrd, &indexbuffer) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Creating the Index Buffer" );
+	}
 
 	// create the vertex buffer
 	D3D11_BUFFER_DESC bd = { 0 };
-	bd.ByteWidth = (UINT)( sizeof(VERTEX) * OurVertices.size() );
+	bd.ByteWidth = (UINT)( sizeof(VERTEX) * Vertices.size() );
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
-	D3D11_SUBRESOURCE_DATA srd = {&OurVertices[0], 0, 0};
+	D3D11_SUBRESOURCE_DATA srd = {&Vertices[0], 0, 0};
 
 	if( FAILED( hr = dev->CreateBuffer( &bd,&srd,&pVBuffer ) ) )
 	{
@@ -311,10 +344,9 @@ void CoreGraphics::Render()
 	// load the data into the constant buffer
 	devcon->UpdateSubresource(constantbuffer.Get(), 0, 0, &finalMatrix, 0, 0);
 	devcon->IASetVertexBuffers(0, 1, pVBuffer.GetAddressOf(), &stride, &offset);
-	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	devcon->Draw(10, start);
-	devcon->Draw(4, 10 );
-	devcon->Draw(4, 14 );
+	devcon->IASetIndexBuffer(indexbuffer.Get(),DXGI_FORMAT_R16_UINT,0 );
+	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	devcon->DrawIndexed( 36,0,0 );
 	devcon->IASetInputLayout(pLayout.Get());
 
 	HRESULT hr;
@@ -323,6 +355,14 @@ void CoreGraphics::Render()
 	if( FAILED( hr = swapchain->Present(1, 0) ) )
 	{
 		throw GRAPHICS_EXCEPTION( hr,L"Swapping Back and Front Buffers" );
+	}
+}
+
+void CoreGraphics::AddVertices( std::vector<VERTEX> newVertices )
+{
+	for( auto i : newVertices )
+	{
+		Vertices.push_back( i );
 	}
 }
 

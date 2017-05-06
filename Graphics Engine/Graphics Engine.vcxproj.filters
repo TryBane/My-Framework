@@ -59,6 +59,9 @@
     <ClInclude Include="Keyboard.h">
       <Filter>Header Files\Core Framework\Input</Filter>
     </ClInclude>
+    <ClInclude Include="VertexList.h">
+      <Filter>Header Files\Core Framework\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader.hlsl">

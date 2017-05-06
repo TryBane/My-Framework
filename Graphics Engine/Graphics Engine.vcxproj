@@ -187,6 +187,7 @@
     <ClInclude Include="DXErr.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="My Exceptions.h" />
+    <ClInclude Include="VertexList.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
