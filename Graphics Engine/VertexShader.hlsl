@@ -13,7 +13,7 @@ struct VOut
     float4 color : COLOR;
 };
 
-VOut main(float4 position : POSITION, float4 normal : NORMAL)
+VOut main(float4 position : POSITION, float4 normal : NORMAL, float4 color : COLOR)
 {
     VOut output;
 
@@ -28,7 +28,7 @@ VOut main(float4 position : POSITION, float4 normal : NORMAL)
 	//output.position.y += offset.y;
 	//output.position.xy *= offset.z;
 	//output.position.w += offset.w;
-    //output.color = color;
+    output.color *= color;
 
     return output;
 }

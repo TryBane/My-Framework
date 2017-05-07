@@ -6,7 +6,7 @@
 
 static std::vector<VERTEX> OurVertices =
 {
-	{ {-1.0f, -1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f}, DirectX::Colors::White },    // side 1
+	{ {-1.0f, -1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f}, DirectX::Colors::Blue },    // side 1
 	{ {1.0f, -1.0f, 1.0f  }, { 0.0f, 0.0f, 1.0f}, DirectX::Colors::White }, 
 	{ {-1.0f, 1.0f, 1.0f  }, { 0.0f, 0.0f, 1.0f}, DirectX::Colors::White },
 	{ {1.0f, 1.0f, 1.0f   }, { 0.0f, 0.0f, 1.0f}, DirectX::Colors::White },
