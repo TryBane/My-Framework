@@ -84,5 +84,7 @@ private:
 	Keyboard& keyboard;
 	CBUFFER cBuffer;
 
-	float dTime;
+	float rotateY = 0.0f;
+	float rotateX = 0.0f;
+	float rotateZ = 0.0f;
 };

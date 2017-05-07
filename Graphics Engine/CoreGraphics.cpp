@@ -146,7 +146,6 @@ CoreGraphics::CoreGraphics( WindowKey& key,Keyboard& Keyboard )
 
 	Initialize();
 
-	dTime = 0.0f;
 
 }
 
@@ -258,7 +257,9 @@ void CoreGraphics::Initialize()
 void CoreGraphics::SetMatrix()
 {
 	// calculate the world transformation
-	DirectX::XMMATRIX matWorld = DirectX::XMMatrixRotationY(dTime);
+	DirectX::XMMATRIX matWorld = DirectX::XMMatrixRotationY(rotateY);
+	matWorld *= DirectX::XMMatrixRotationX(rotateX);
+	matWorld *= DirectX::XMMatrixRotationZ(rotateZ);
 
 	// calculate the view transformation
 	DirectX::XMVECTOR vecCamPosition = DirectX::XMVectorSet(1.5f, 1.5f, -4.0f, 0);
@@ -286,30 +287,29 @@ void CoreGraphics::SetMatrix()
 // this function performs updates to the state of the game
 void CoreGraphics::Update()
 {
-	dTime += 0.02f;
 	if( keyboard.KeyIsPressed( VK_RIGHT ) )
 	{
-		dTime += 0.1f;
+		rotateZ += 0.04f;
 	}
 	if( keyboard.KeyIsPressed( VK_LEFT ) )
 	{
-		dTime -= 0.1f;
+		rotateZ -= 0.04f;
 	}
 	if( keyboard.KeyIsPressed( VK_UP ) )
 	{
-		Offset.Y += 0.01f;
+		rotateX += 0.04f;
 	}
 	if( keyboard.KeyIsPressed( VK_DOWN ) )
 	{
-		Offset.Y -= 0.01f;
+		rotateX -= 0.04f;
 	}
 	if( keyboard.KeyIsPressed( VK_SPACE ) )
 	{
-		Offset.Z -= 0.01f;
+		rotateY -= 0.04f;
 	}
 	if( keyboard.KeyIsPressed( VK_SHIFT ) )
 	{
-		Offset.Z += 0.1f;
+		rotateY += 0.04f;
 	}
 }
 
