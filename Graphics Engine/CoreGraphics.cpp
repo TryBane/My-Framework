@@ -5,6 +5,7 @@
 #include <vector>
 #include <iterator>
 #include "VertexList.h"
+#include "WICTextureLoader.h"
 #pragma comment( lib, "d3d11.lib")
 
 using namespace DirectX::Colors;
@@ -162,6 +163,8 @@ CoreGraphics::~CoreGraphics()
 
 void CoreGraphics::Initialize()
 {
+	LoadResources();
+
 	HRESULT hr;
 
 	/***********************************/
@@ -187,7 +190,7 @@ void CoreGraphics::Initialize()
 
 	// create the index buffer
 	D3D11_BUFFER_DESC ibd = {0};
-	ibd.ByteWidth = sizeof(short) * CubeVertexIndices.size();
+	ibd.ByteWidth = UINT( sizeof(short) * CubeVertexIndices.size() );
 	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
 	D3D11_SUBRESOURCE_DATA isrd = {&CubeVertexIndices[0], 0, 0};
@@ -233,7 +236,8 @@ void CoreGraphics::Initialize()
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"COLOR",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 
 	// create and set the input layout
@@ -252,20 +256,93 @@ void CoreGraphics::Initialize()
 	{
 		throw GRAPHICS_EXCEPTION( hr,L"Creating the Constant Buffer" );
 	}
+
+	SetStates();
+}
+
+void CoreGraphics::LoadResources()
+{
+	HRESULT hr;
+
+	if( FAILED( hr = DirectX::CreateWICTextureFromFile(dev.Get(),nullptr,L"Wood.png",nullptr,&texture,0 ) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Loading Wood.png" );
+	}
+}
+
+void CoreGraphics::SetStates( )
+{
+	HRESULT hr;
+
+	// Setting up Rasterizer States
+	D3D11_RASTERIZER_DESC rd;
+	rd.FillMode = D3D11_FILL_SOLID;
+	rd.CullMode = D3D11_CULL_BACK;
+	rd.FrontCounterClockwise = false;
+	rd.DepthClipEnable = false;
+	rd.ScissorEnable = false;
+	rd.AntialiasedLineEnable = true;
+	rd.MultisampleEnable = false;
+	rd.DepthBias = 0;
+	rd.DepthBiasClamp = 0.0f;
+	rd.SlopeScaledDepthBias = 0.0f;
+
+
+	if( FAILED( hr = dev->CreateRasterizerState( &rd,&defaultRasterizerState ) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Creating Rasterizer State: Default" );
+	}
+
+	rd.FillMode = D3D11_FILL_WIREFRAME;
+	if( FAILED( hr = dev->CreateRasterizerState( &rd,&wireFrameRasterizerState ) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Creating Rasterizer State: Wireframe" );
+	}
+
+	// Setting up Blend state
+	D3D11_BLEND_DESC bd;
+	bd.RenderTarget[0].BlendEnable = true;
+	bd.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	bd.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	bd.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	bd.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	bd.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	bd.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	bd.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	bd.IndependentBlendEnable = false;
+	bd.AlphaToCoverageEnable = true;
+	
+	if( FAILED( hr = dev->CreateBlendState( &bd,&blendState ) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Creating Blend State" );
+	}
+
+	D3D11_DEPTH_STENCIL_DESC dsd = { 0 };
+	dsd.DepthEnable = true;
+	dsd.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	dsd.DepthFunc = D3D11_COMPARISON_LESS;
+
+	if( FAILED( hr = dev->CreateDepthStencilState( &dsd,depthStencilState.GetAddressOf() ) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Creating Depth Stencil State" );
+	}
 }
 
 void CoreGraphics::SetMatrix()
 {
 	// calculate the world transformation
-	DirectX::XMMATRIX matWorld = DirectX::XMMatrixRotationY(rotateY);
-	matWorld *= DirectX::XMMatrixRotationX(rotateX);
-	matWorld *= DirectX::XMMatrixRotationZ(rotateZ);
+	DirectX::XMMATRIX matWorld = DirectX::XMMatrixRotationRollPitchYaw(rotateX,rotateY,rotateZ);
 
 	// calculate the view transformation
-	DirectX::XMVECTOR vecCamPosition = DirectX::XMVectorSet(1.5f, 1.5f, -4.0f, 0);
+	DirectX::XMVECTOR vecCamPosition = DirectX::XMVectorSet(positionX, positionY, -4.0f, 0);
 	DirectX::XMVECTOR vecCamLookAt = DirectX::XMVectorSet(0, 0, 0, 0);
 	DirectX::XMVECTOR vecCamUp = DirectX::XMVectorSet(0, 1, 0, 0);
 	DirectX::XMMATRIX matView = DirectX::XMMatrixLookAtLH(vecCamPosition, vecCamLookAt, vecCamUp);
+
+	//matView *= DirectX::XMMatrixRotationX(positionX);
+	//matView *= DirectX::XMMatrixRotationY(positionY);
+	//matView *= DirectX::XMMatrixRotationZ(positionZ);
+
 
 	// calculate the projection transformation
 	DirectX::XMMATRIX matProjection = DirectX::XMMatrixPerspectiveFovLH(
@@ -311,6 +388,33 @@ void CoreGraphics::Update()
 	{
 		rotateY += 0.04f;
 	}
+
+	if( keyboard.KeyIsPressed( 'W' ) )
+	{
+		positionY += 0.1f;
+	}
+	if( keyboard.KeyIsPressed( 'A' ) )
+	{
+		positionX -= 0.1f;
+	}
+	if( keyboard.KeyIsPressed( 'S' ) )
+	{
+		positionY -= 0.1f;
+	}
+	if( keyboard.KeyIsPressed( 'D' ) )
+	{
+		positionX += 0.1f;
+	}
+
+	DebugModeToggle();
+}
+
+void CoreGraphics::DebugModeToggle( )
+{
+	if( keyboard.KeyIsPressed( VK_CONTROL ) )
+	{
+		debugModeToggle = debugModeToggle ? false : true;
+	}
 }
 
 // this function renders a single frame of 3D graphics
@@ -320,6 +424,8 @@ void CoreGraphics::Render()
 
 	// set our new render target object as the active render target
 	devcon->OMSetRenderTargets(1, backbuffer.GetAddressOf(), nullptr);
+	devcon->OMSetDepthStencilState( depthStencilState.Get(), 0 );
+	devcon->OMSetBlendState( blendState.Get(), 0, 0xffffffff );
 
 	// clear the back buffer to a deep blue
 	float color[4] = {0.0f, 0.2f, 0.4f, 1.0f};
@@ -327,8 +433,14 @@ void CoreGraphics::Render()
 	// clear the depth buffer
 	devcon->ClearDepthStencilView(zbuffer.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-
-	// Set start and end for Vertex Drawing
+	if( debugModeToggle )
+	{
+		devcon->RSSetState(wireFrameRasterizerState.Get() );
+	}
+	else
+	{
+		devcon->RSSetState(defaultRasterizerState.Get() );
+	}
 
 	// set the vertex buffer
 	UINT stride = sizeof(VERTEX);
@@ -344,6 +456,7 @@ void CoreGraphics::Render()
 	devcon->VSSetShader(pVS.Get(), nullptr, 0);
 	devcon->PSSetShader(pPS.Get(), nullptr, 0);
 	devcon->VSSetConstantBuffers(0, 1, constantbuffer.GetAddressOf());
+	devcon->PSSetShaderResources( 0,1,texture.GetAddressOf() );
 	// load the data into the constant buffer
 	devcon->UpdateSubresource(constantbuffer.Get(), 0, 0, &cBuffer, 0, 0);
 	devcon->IASetVertexBuffers(0, 1, pVBuffer.GetAddressOf(), &stride, &offset);

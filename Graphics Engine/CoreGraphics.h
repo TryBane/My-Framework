@@ -16,6 +16,7 @@ struct VERTEX
 	DirectX::XMVECTORF32 position;			// vertex position
 	DirectX::XMVECTORF32 normal;			// vertex normal direction
 	DirectX::XMVECTORF32 color;				// vertex color
+	DirectX::XMFLOAT2 U, V;
 };
 
 struct CBUFFER
@@ -52,12 +53,15 @@ public:
 	CoreGraphics( const CoreGraphics& ) = delete;
 	CoreGraphics& operator=( const CoreGraphics& ) = delete;
 	~CoreGraphics();
-	void Initialize();
 	void Update();
 	void Render();
 	void AddVertices( std::vector<VERTEX> newVertices );
 private:
 	void SetMatrix();
+	void Initialize();
+	void SetStates();
+	void DebugModeToggle();
+	void LoadResources();
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> dev;					// the device interface
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> devcon;			// the device context interface
@@ -70,6 +74,11 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> constantbuffer;        // the constant buffer interface
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> zbuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> indexbuffer;
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> defaultRasterizerState;
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> wireFrameRasterizerState;
+	Microsoft::WRL::ComPtr<ID3D11BlendState> blendState;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> depthStencilState;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
 
 public:
 	static constexpr int ScreenOriginx = 300;
@@ -84,7 +93,13 @@ private:
 	Keyboard& keyboard;
 	CBUFFER cBuffer;
 
-	float rotateY = 0.0f;
 	float rotateX = 0.0f;
+	float rotateY = 0.0f;
 	float rotateZ = 0.0f;
+
+	float positionX =  1.5f;
+	float positionY =  1.5f;
+	float positionZ = -4.0f;
+
+	bool debugModeToggle = false;
 };

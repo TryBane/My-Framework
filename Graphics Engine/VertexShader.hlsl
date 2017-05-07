@@ -11,9 +11,10 @@ struct VOut
 {
     float4 position : SV_POSITION;
     float4 color : COLOR;
+	float2 texcoord : TEXCOORD;
 };
 
-VOut main(float4 position : POSITION, float4 normal : NORMAL, float4 color : COLOR)
+VOut main(float4 position : POSITION, float4 normal : NORMAL, float4 color : COLOR, float2 texcoord : TEXCOORD )
 {
     VOut output;
 
@@ -29,6 +30,7 @@ VOut main(float4 position : POSITION, float4 normal : NORMAL, float4 color : COL
 	//output.position.xy *= offset.z;
 	//output.position.w += offset.w;
     output.color *= color;
+	output.texcoord = texcoord;
 
     return output;
 }
