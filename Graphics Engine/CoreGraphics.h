@@ -14,7 +14,17 @@
 struct VERTEX
 {
 	DirectX::XMVECTORF32 position;			// vertex position
-	DirectX::XMVECTORF32 Color;			// vertex color
+	DirectX::XMVECTORF32 normal;			// vertex normal direction
+	DirectX::XMVECTORF32 color;				// vertex color
+};
+
+struct CBUFFER
+{
+	DirectX::XMMATRIX Final;
+	DirectX::XMMATRIX Rotation;
+	DirectX::XMVECTOR DiffuseVector;
+	DirectX::XMVECTOR DiffuseColor;
+	DirectX::XMVECTOR AmbientColor;
 };
 
 // a struct defining the contents of our constant buffer
@@ -58,6 +68,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> pVBuffer;				// the pointer to the vertex buffer
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> backbuffer;	// the pointer to our back buffer
 	Microsoft::WRL::ComPtr<ID3D11Buffer> constantbuffer;        // the constant buffer interface
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> zbuffer;
 	Microsoft::WRL::ComPtr<ID3D11Buffer> indexbuffer;
 
 public:
@@ -67,12 +78,11 @@ public:
 	static constexpr int ScreenHeight = 900u;
 
 private:
-	std::vector<DirectX::XMVECTORF32> vertices;
 	std::vector<VERTEX> Vertices;
-	//std::vector<VERTEX> OurVertices;
 	DirectX::XMMATRIX finalMatrix;
 	OFFSET Offset;
 	Keyboard& keyboard;
+	CBUFFER cBuffer;
 
 	float dTime;
 };

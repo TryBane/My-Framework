@@ -38,14 +38,6 @@ CoreGraphics::CoreGraphics( WindowKey& key,Keyboard& Keyboard )
 	:
 	keyboard( Keyboard )
 {
-	vertices.push_back({-0.25f,  0.25f,-0.25f});
-	vertices.push_back({-0.25f, -0.25f,-0.25f});
-	vertices.push_back({ 0.25f,  0.25f,-0.25f});
-	vertices.push_back({ 0.25f, -0.25f,-0.25f});
-	vertices.push_back({-0.25f, -0.25f, 0.25f});
-	vertices.push_back({-0.25f,  0.25f, 0.25f});
-	vertices.push_back({ 0.25f,  0.25f, 0.25f});
-	vertices.push_back({ 0.25f, -0.25f, 0.25f});
 
 	Offset.X = 0.5f;
 	Offset.Y = 0.2f;
@@ -112,6 +104,32 @@ CoreGraphics::CoreGraphics( WindowKey& key,Keyboard& Keyboard )
 	}
 
 
+	// create a zbuffer
+	D3D11_TEXTURE2D_DESC texd = {0};
+
+	texd.Width = ScreenWidth;
+	texd.Height = ScreenHeight;
+	texd.ArraySize = 1;
+	texd.MipLevels = 1;
+	texd.SampleDesc.Count = 1;
+	texd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	texd.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+	Microsoft::WRL::ComPtr<ID3D11Texture2D> zbuffertexture;
+	if( FAILED( hr = dev->CreateTexture2D( &texd,nullptr,&zbuffertexture ) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Creating zbuffer Texture" );
+	}
+	D3D11_DEPTH_STENCIL_VIEW_DESC dsvd;
+	ZeroMemory(&dsvd, sizeof(dsvd));
+
+	dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+
+	if( FAILED( hr = dev->CreateDepthStencilView(zbuffertexture.Get(), &dsvd, &zbuffer) ) )
+	{
+		throw GRAPHICS_EXCEPTION( hr,L"Creating Depth Stencil View" );
+	}
+
 	// Set the viewport
 	D3D11_VIEWPORT viewport = { 0 };
 
@@ -119,6 +137,8 @@ CoreGraphics::CoreGraphics( WindowKey& key,Keyboard& Keyboard )
 	viewport.TopLeftY = 0;
 	viewport.Width = ScreenWidth;
 	viewport.Height = ScreenHeight;
+	viewport.MinDepth = 0;    // the closest an object can be on the depth buffer is 0.0
+	viewport.MaxDepth = 1;    // the farthest an object can be on the depth buffer is 1.0
 
 	devcon->RSSetViewports(1, &viewport);
 
@@ -148,55 +168,30 @@ void CoreGraphics::Initialize()
 	/***********************************/
 	/******* Initialize Graphics *******/
 	/***********************************/
-
-	// create a triangle using the VERTEX struct
-	//std::vector<VERTEX> OurVertices=
-	//{
-	//	{vertices[1],White},
-	//	{vertices[0],Blue},
-	//	{vertices[3],Black},
-	//	{vertices[2],Red},
-	//	{vertices[7],Green},
-	//	{vertices[6],Teal},
-	//	{vertices[4],Magenta},
-	//	{vertices[5],Gold},
-	//	{vertices[1],White},
-	//	{vertices[0],Blue},
-	//
-	//	{vertices[0],Blue},
-	//	{vertices[5],Gold},
-	//	{vertices[2],Red},
-	//	{vertices[6],Teal},
-	//
-	//	{vertices[4],Magenta},
-	//	{vertices[1],White},
-	//	{vertices[7],Green},
-	//	{vertices[3],Black}
-	//
-	//};
-
-	std::vector<short> VertexIndices =
+	
+	// Index list for Cube
+	std::vector<short> CubeVertexIndices =
 	{
 		0, 1, 2,    // side 1
 		2, 1, 3,
-		4, 0, 6,    // side 2
-		6, 0, 2,
-		7, 5, 6,    // side 3
-		6, 5, 4,
-		3, 1, 7,    // side 4
-		7, 1, 5,
-		4, 5, 0,    // side 5
-		0, 5, 1,
-		3, 7, 2,    // side 6
-		2, 7, 6,
+		4, 5, 6,    // side 2
+		6, 5, 7,
+		8, 9, 10,    // side 3
+		10, 9, 11,
+		12, 13, 14,    // side 4
+		14, 13, 15,
+		16, 17, 18,    // side 5
+		18, 17, 19,
+		20, 21, 22,    // side 6
+		22, 21, 23,
 	};
 
 	// create the index buffer
 	D3D11_BUFFER_DESC ibd = {0};
-	ibd.ByteWidth = sizeof(short) * VertexIndices.size();
+	ibd.ByteWidth = sizeof(short) * CubeVertexIndices.size();
 	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
-	D3D11_SUBRESOURCE_DATA isrd = {&VertexIndices[0], 0, 0};
+	D3D11_SUBRESOURCE_DATA isrd = {&CubeVertexIndices[0], 0, 0};
 
 
 	if( FAILED( hr = dev->CreateBuffer(&ibd, &isrd, &indexbuffer) ) )
@@ -238,7 +233,8 @@ void CoreGraphics::Initialize()
 	D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		//{"COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 
 	// create and set the input layout
@@ -249,7 +245,7 @@ void CoreGraphics::Initialize()
 
 	bd = { 0 };
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = 64;
+	bd.ByteWidth = sizeof(CBUFFER);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
 	// Create Constant Buffer
@@ -265,7 +261,7 @@ void CoreGraphics::SetMatrix()
 	DirectX::XMMATRIX matWorld = DirectX::XMMatrixRotationY(dTime);
 
 	// calculate the view transformation
-	DirectX::XMVECTOR vecCamPosition = DirectX::XMVectorSet(1.5f, 0.5f, 1.5f, 0);
+	DirectX::XMVECTOR vecCamPosition = DirectX::XMVectorSet(1.5f, 1.5f, -4.0f, 0);
 	DirectX::XMVECTOR vecCamLookAt = DirectX::XMVectorSet(0, 0, 0, 0);
 	DirectX::XMVECTOR vecCamUp = DirectX::XMVectorSet(0, 1, 0, 0);
 	DirectX::XMMATRIX matView = DirectX::XMMatrixLookAtLH(vecCamPosition, vecCamLookAt, vecCamUp);
@@ -280,19 +276,24 @@ void CoreGraphics::SetMatrix()
 																	 // calculate the final matrix
 	finalMatrix = matWorld * matView * matProjection;
 
+	cBuffer.Final = finalMatrix;
+	cBuffer.Rotation = matWorld;
+	cBuffer.DiffuseVector = DirectX::XMVectorSet( 1.0f, 1.0f, 1.0f, 1.0f );
+	cBuffer.DiffuseColor = DirectX::XMVectorSet( 0.5f, 0.5f, 0.5f, 1.0f );
+	cBuffer.AmbientColor = DirectX::XMVectorSet( 0.2f, 0.2f, 0.2f, 1.0f );
 }
 
 // this function performs updates to the state of the game
 void CoreGraphics::Update()
 {
-	dTime += 0.05f;
+	dTime += 0.02f;
 	if( keyboard.KeyIsPressed( VK_RIGHT ) )
 	{
-		Offset.X += 0.01f;
+		dTime += 0.1f;
 	}
 	if( keyboard.KeyIsPressed( VK_LEFT ) )
 	{
-		Offset.X -= 0.01f;
+		dTime -= 0.1f;
 	}
 	if( keyboard.KeyIsPressed( VK_UP ) )
 	{
@@ -315,17 +316,19 @@ void CoreGraphics::Update()
 // this function renders a single frame of 3D graphics
 void CoreGraphics::Render()
 {
+
+
 	// set our new render target object as the active render target
 	devcon->OMSetRenderTargets(1, backbuffer.GetAddressOf(), nullptr);
 
 	// clear the back buffer to a deep blue
 	float color[4] = {0.0f, 0.2f, 0.4f, 1.0f};
 	devcon->ClearRenderTargetView(backbuffer.Get(), color);
+	// clear the depth buffer
+	devcon->ClearDepthStencilView(zbuffer.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 
 
 	// Set start and end for Vertex Drawing
-	int end = (int)vertices.size();
-	int start = 0;
 
 	// set the vertex buffer
 	UINT stride = sizeof(VERTEX);
@@ -342,7 +345,7 @@ void CoreGraphics::Render()
 	devcon->PSSetShader(pPS.Get(), nullptr, 0);
 	devcon->VSSetConstantBuffers(0, 1, constantbuffer.GetAddressOf());
 	// load the data into the constant buffer
-	devcon->UpdateSubresource(constantbuffer.Get(), 0, 0, &finalMatrix, 0, 0);
+	devcon->UpdateSubresource(constantbuffer.Get(), 0, 0, &cBuffer, 0, 0);
 	devcon->IASetVertexBuffers(0, 1, pVBuffer.GetAddressOf(), &stride, &offset);
 	devcon->IASetIndexBuffer(indexbuffer.Get(),DXGI_FORMAT_R16_UINT,0 );
 	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

@@ -6,13 +6,34 @@
 
 static std::vector<VERTEX> OurVertices =
 {
-	{{-0.25f,  0.25f,-0.25f},DirectX::Colors::White},	   //0
-	{{ 0.25f,  0.25f,-0.25f},DirectX::Colors::Blue},	   //1
-	{{-0.25f, -0.25f,-0.25f},DirectX::Colors::Black},	   //2
-	{{ 0.25f, -0.25f,-0.25f},DirectX::Colors::Red},		   //3
-	{{-0.25f,  0.25f, 0.25f},DirectX::Colors::Green},	   //4
-	{{ 0.25f,  0.25f, 0.25f},DirectX::Colors::Teal},	   //5
-	{{-0.25f, -0.25f, 0.25f},DirectX::Colors::Magenta},	   //6
-	{{ 0.25f, -0.25f, 0.25f},DirectX::Colors::Gold}		   //7
+	{ {-1.0f, -1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f}, DirectX::Colors::White },    // side 1
+	{ {1.0f, -1.0f, 1.0f  }, { 0.0f, 0.0f, 1.0f}, DirectX::Colors::White }, 
+	{ {-1.0f, 1.0f, 1.0f  }, { 0.0f, 0.0f, 1.0f}, DirectX::Colors::White },
+	{ {1.0f, 1.0f, 1.0f   }, { 0.0f, 0.0f, 1.0f}, DirectX::Colors::White },
+	 						
+	{ {-1.0f, -1.0f, -1.0f}, { 0.0f, 0.0f, -1.0f}, DirectX::Colors::White },    // side 2
+	{ {-1.0f, 1.0f, -1.0f }, { 0.0f, 0.0f, -1.0f}, DirectX::Colors::White },
+	{ {1.0f, -1.0f, -1.0f }, { 0.0f, 0.0f, -1.0f}, DirectX::Colors::White },
+	{ {1.0f, 1.0f, -1.0f  }, { 0.0f, 0.0f, -1.0f}, DirectX::Colors::White },
+	 						 
+	{ {-1.0f, 1.0f, -1.0f }, { 0.0f, 1.0f, 0.0f}, DirectX::Colors::White },    // side 3
+	{ {-1.0f, 1.0f, 1.0f  }, { 0.0f, 1.0f, 0.0f}, DirectX::Colors::White },
+	{ {1.0f, 1.0f, -1.0f  }, { 0.0f, 1.0f, 0.0f}, DirectX::Colors::White },
+	{ {1.0f, 1.0f, 1.0f   }, { 0.0f, 1.0f, 0.0f}, DirectX::Colors::White },
+	 						
+	{ {-1.0f, -1.0f, -1.0f}, { 0.0f, -1.0f, 0.0f}, DirectX::Colors::White },    // side 4
+	{ {1.0f, -1.0f, -1.0f }, { 0.0f, -1.0f, 0.0f}, DirectX::Colors::White },
+	{ {-1.0f, -1.0f, 1.0f }, { 0.0f, -1.0f, 0.0f}, DirectX::Colors::White },
+	{ {1.0f, -1.0f, 1.0f  }, { 0.0f, -1.0f, 0.0f}, DirectX::Colors::White },
+	 						
+	{ {1.0f, -1.0f, -1.0f }, { 1.0f, 0.0f, 0.0f}, DirectX::Colors::White },    // side 5
+	{ {1.0f, 1.0f, -1.0f  }, { 1.0f, 0.0f, 0.0f}, DirectX::Colors::White },
+	{ {1.0f, -1.0f, 1.0f  }, { 1.0f, 0.0f, 0.0f}, DirectX::Colors::White },
+	{ {1.0f, 1.0f, 1.0f   }, { 1.0f, 0.0f, 0.0f}, DirectX::Colors::White },
+	 						
+	{ {-1.0f, -1.0f, -1.0f}, { -1.0f, 0.0f, 0.0f}, DirectX::Colors::White },    // side 6
+	{ {-1.0f, -1.0f, 1.0f }, { -1.0f, 0.0f, 0.0f}, DirectX::Colors::White },
+	{ {-1.0f, 1.0f, -1.0f }, { -1.0f, 0.0f, 0.0f}, DirectX::Colors::White },
+	{ {-1.0f, 1.0f, 1.0f  }, { -1.0f, 0.0f, 0.0f}, DirectX::Colors::White },
 
 };
