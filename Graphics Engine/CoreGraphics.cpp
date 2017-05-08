@@ -35,9 +35,7 @@ std::vector<byte> LoadShaderFile(std::string File)
 }
 
 // this function initializes and prepares Direct3D for use
-CoreGraphics::CoreGraphics( WindowKey& key,Keyboard& Keyboard )
-	:
-	keyboard( Keyboard )
+CoreGraphics::CoreGraphics( WindowKey& key )
 {
 
 	Offset.X = 0.5f;
@@ -264,7 +262,7 @@ void CoreGraphics::LoadResources()
 {
 	HRESULT hr;
 
-	if( FAILED( hr = DirectX::CreateWICTextureFromFile(dev.Get(),nullptr,L"Wood.png",nullptr,&texture,0 ) ) )
+	if( FAILED( hr = DirectX::CreateWICTextureFromFile(dev.Get(),nullptr,L"Hot Chick.jpg",nullptr,&texture,0 ) ) )
 	{
 		throw GRAPHICS_EXCEPTION( hr,L"Loading Wood.png" );
 	}
@@ -364,57 +362,12 @@ void CoreGraphics::SetMatrix()
 // this function performs updates to the state of the game
 void CoreGraphics::Update()
 {
-	if( keyboard.KeyIsPressed( VK_RIGHT ) )
-	{
-		rotateZ += 0.04f;
-	}
-	if( keyboard.KeyIsPressed( VK_LEFT ) )
-	{
-		rotateZ -= 0.04f;
-	}
-	if( keyboard.KeyIsPressed( VK_UP ) )
-	{
-		rotateX += 0.04f;
-	}
-	if( keyboard.KeyIsPressed( VK_DOWN ) )
-	{
-		rotateX -= 0.04f;
-	}
-	if( keyboard.KeyIsPressed( VK_SPACE ) )
-	{
-		rotateY -= 0.04f;
-	}
-	if( keyboard.KeyIsPressed( VK_SHIFT ) )
-	{
-		rotateY += 0.04f;
-	}
-
-	if( keyboard.KeyIsPressed( 'W' ) )
-	{
-		positionY += 0.1f;
-	}
-	if( keyboard.KeyIsPressed( 'A' ) )
-	{
-		positionX -= 0.1f;
-	}
-	if( keyboard.KeyIsPressed( 'S' ) )
-	{
-		positionY -= 0.1f;
-	}
-	if( keyboard.KeyIsPressed( 'D' ) )
-	{
-		positionX += 0.1f;
-	}
-
 	DebugModeToggle();
 }
 
 void CoreGraphics::DebugModeToggle( )
 {
-	if( keyboard.KeyIsPressed( VK_CONTROL ) )
-	{
-		debugModeToggle = debugModeToggle ? false : true;
-	}
+	
 }
 
 // this function renders a single frame of 3D graphics

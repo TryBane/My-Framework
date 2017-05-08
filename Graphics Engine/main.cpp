@@ -16,8 +16,7 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 
 		try
 		{
-			CoreGraphics gfx( window,window.keyboard );
-
+			CoreGraphics gfx( window );
 			// Enter the infinite message loop
 			while( window.readMessage( ) )
 			{

@@ -49,7 +49,7 @@ public:
 		HRESULT hr;
 	};
 public:
-	CoreGraphics( class WindowKey& key,Keyboard& keyboard );
+	CoreGraphics( class WindowKey& key );
 	CoreGraphics( const CoreGraphics& ) = delete;
 	CoreGraphics& operator=( const CoreGraphics& ) = delete;
 	~CoreGraphics();
@@ -90,7 +90,6 @@ private:
 	std::vector<VERTEX> Vertices;
 	DirectX::XMMATRIX finalMatrix;
 	OFFSET Offset;
-	Keyboard& keyboard;
 	CBUFFER cBuffer;
 
 	float rotateX = 0.0f;

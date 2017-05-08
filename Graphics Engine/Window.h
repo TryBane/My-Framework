@@ -10,7 +10,7 @@ static bool rightIsPressed = false;
 
 class WindowKey
 {
-	friend CoreGraphics::CoreGraphics( WindowKey&,Keyboard& );
+	friend CoreGraphics::CoreGraphics( WindowKey& );
 public:
 	WindowKey( const WindowKey& ) = delete;
 	WindowKey& operator=( WindowKey& ) = delete;
@@ -24,6 +24,8 @@ class CoreWindow : public WindowKey
 {
 public:
 	CoreWindow( HINSTANCE hInst,wchar_t* lpCmdLine);
+	CoreWindow( const CoreWindow& ) = delete;
+	CoreWindow& operator=( const CoreWindow& ) = delete;
 	void DisplayMessage( const std::wstring& title,const std::wstring& message ) const;
 
 	bool readMessage();
