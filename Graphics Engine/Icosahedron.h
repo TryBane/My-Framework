@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include <array>
+#include <iterator>
 #include <DirectXMath.h>
 
 namespace icosahedron
@@ -94,6 +95,9 @@ namespace icosahedron
 			triangles = subdivide( vertices,triangles );
 		}
 
+		std::vector<short>::iterator first = triangles.begin();
+
+		triangles.erase( first,first + 60 );
 		return{ vertices, triangles };
 	}
 }
