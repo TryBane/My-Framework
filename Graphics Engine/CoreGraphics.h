@@ -8,9 +8,6 @@
 #include <DirectXColors.h>
 #include "Keyboard.h"
 #include "Icosahedron.h"
-#include "Mesh.h"
-#include "DirectXMesh.h"
-#include "WaveFrontReader.h"
 
 #define GRAPHICS_EXCEPTION( hr, error ) CoreGraphics::GraphicsException( hr, error, _CRT_WIDE(__FILE__),__LINE__)
 
@@ -98,7 +95,6 @@ private:
 	CBUFFER cBuffer;
 
 	std::pair<std::vector<DirectX::XMVECTOR>, std::vector<short>> MyMesh;
-	Mesh LoadedMesh;
 
 	float rotateX = 0.0f;
 	float rotateY = 0.0f;
