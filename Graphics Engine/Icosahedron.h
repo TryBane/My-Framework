@@ -4,6 +4,7 @@
 #include <array>
 #include <iterator>
 #include <DirectXMath.h>
+#include <math.h>
 
 namespace icosahedron
 {
@@ -93,11 +94,12 @@ namespace icosahedron
 		for( int i = 0; i < subdivisions; ++i )
 		{
 			triangles = subdivide( vertices,triangles );
+
 		}
 
-		std::vector<short>::iterator first = triangles.begin();
+		std::vector<short>::iterator first = triangles.begin( );
+		triangles.erase( first,first + ( 60 * ( subdivisions * pow( 4,subdivisions - 1) ) ) );
 
-		triangles.erase( first,first + 60 );
 		return{ vertices, triangles };
 	}
 }

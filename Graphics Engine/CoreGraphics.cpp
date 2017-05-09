@@ -71,7 +71,6 @@ CoreGraphics::CoreGraphics( WindowKey& key )
 		throw GRAPHICS_EXCEPTION( hr, L"Creating Device");
 	}
 
-
 	// obtain the DXGI factory
 	Microsoft::WRL::ComPtr<IDXGIDevice> dxgiDevice;
 	Microsoft::WRL::ComPtr<IDXGIFactory> dxgiFactory;
@@ -165,7 +164,9 @@ void CoreGraphics::Initialize()
 
 	HRESULT hr;
 
-	MyMesh = icosahedron::make_icosphere( 3 );
+	MyMesh = icosahedron::make_icosphere( 2 );
+
+	int size = MyMesh.second.size();
 
 	/***********************************/
 	/******* Initialize Graphics *******/
@@ -424,7 +425,7 @@ void CoreGraphics::Render()
 	devcon->IASetVertexBuffers(0, 1, pVBuffer.GetAddressOf(), &stride, &offset);
 	devcon->IASetIndexBuffer(indexbuffer.Get(),DXGI_FORMAT_R16_UINT,0 );
 	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	devcon->DrawIndexed( 600000,0,0 );
+	devcon->DrawIndexed( 10000,0,0 );
 	devcon->IASetInputLayout(pLayout.Get());
 
 	HRESULT hr;
