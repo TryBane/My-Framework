@@ -97,7 +97,7 @@ private:
 	OFFSET Offset;
 	CBUFFER cBuffer;
 
-	std::pair<std::vector<DirectX::XMVECTOR>, std::vector<Triangle>> MyMesh;
+	std::pair<std::vector<DirectX::XMVECTOR>, std::vector<short>> MyMesh;
 	Mesh LoadedMesh;
 
 	float rotateX = 0.0f;

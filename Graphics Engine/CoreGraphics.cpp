@@ -165,7 +165,7 @@ void CoreGraphics::Initialize()
 
 	HRESULT hr;
 
-	MyMesh = icosahedron::make_icosphere( 4 );
+	MyMesh = icosahedron::make_icosphere( 0 );
 
 	/***********************************/
 	/******* Initialize Graphics *******/
@@ -192,6 +192,7 @@ void CoreGraphics::Initialize()
 	D3D11_BUFFER_DESC ibd = {0};
 	ibd.ByteWidth = UINT( sizeof(short) * MyMesh.second.size() );
 	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
 
 	D3D11_SUBRESOURCE_DATA isrd = { &MyMesh.second[0],0,0};
 
@@ -423,7 +424,7 @@ void CoreGraphics::Render()
 	devcon->IASetVertexBuffers(0, 1, pVBuffer.GetAddressOf(), &stride, &offset);
 	devcon->IASetIndexBuffer(indexbuffer.Get(),DXGI_FORMAT_R16_UINT,0 );
 	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	devcon->DrawIndexed( 6000,0,0 );
+	devcon->DrawIndexed( 600000,0,0 );
 	devcon->IASetInputLayout(pLayout.Get());
 
 	HRESULT hr;
