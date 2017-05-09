@@ -165,7 +165,7 @@ void CoreGraphics::Initialize()
 
 	HRESULT hr;
 
-	MyMesh = icosahedron::make_icosphere( 0 );
+	MyMesh = icosahedron::make_icosphere( 3 );
 
 	/***********************************/
 	/******* Initialize Graphics *******/

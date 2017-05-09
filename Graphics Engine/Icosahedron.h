@@ -10,6 +10,8 @@ namespace icosahedron
 	const float Z=.850650808352039932f;
 	const float N=0.f;
 
+	using TriangleList=std::vector<short>;
+
 	static const std::vector<DirectX::XMVECTOR> vertices =
 	{
 		{-X,N,Z}, {X,N,Z}, {-X,N,-Z}, {X,N,-Z},
@@ -17,7 +19,7 @@ namespace icosahedron
 		{Z,X,N}, {-Z,X, N}, {Z,-X,N}, {-Z,-X, N}
 	};
 
-	static const std::vector<short> triangles =
+	static const TriangleList triangles =
 	{
 		0,4,1,0,9,4,9,5,4,4,5,8,4,8,1,
 		8,10,1,8,3,10,5,3,8,5,2,3,2,7,3,
@@ -44,30 +46,32 @@ namespace icosahedron
 		return inserted.first->second;
 	}
 
-	inline std::vector<short> subdivide( std::vector<DirectX::XMVECTOR>& vertices,
-		std::vector<short> triangles )
+
+	inline TriangleList subdivide( std::vector<DirectX::XMVECTOR>& vertices,
+		TriangleList triangles)
 	{
 		std::map<std::pair<short,short>,short> lookup;
-		std::vector<short> result;
+		TriangleList result = triangles;
 
-		for( auto&& each : triangles )
+		for( auto begin = 0; begin < triangles.size() - 2; begin++, begin++, begin++)
 		{
+
 			std::array<short,3> mid;
 			for( int edge = 0; edge < 3; ++edge )
 			{
 				mid[edge] = vertex_for_edge( lookup,vertices,
-					triangles[edge],triangles[  (edge + 1) % 3 ] );
+					triangles[begin + edge],triangles[begin + ( (edge + 1) % 3 )] );
 			}
 
-			result.push_back( triangles[0]);
+			result.push_back( triangles[ begin ] );
 			result.push_back( mid[0] );
 			result.push_back( mid[2] );
 
-			result.push_back( triangles[1]);
+			result.push_back( triangles[ begin + 1 ] );
 			result.push_back( mid[1] );
 			result.push_back( mid[0] );
 
-			result.push_back( triangles[2]);
+			result.push_back( triangles[ begin + 2 ] );
 			result.push_back( mid[2] );
 			result.push_back( mid[1] );
 
@@ -80,10 +84,10 @@ namespace icosahedron
 		return result;
 	}
 
-	inline std::pair<std::vector<DirectX::XMVECTOR>,std::vector<short>> make_icosphere( int subdivisions )
+	inline std::pair<std::vector<DirectX::XMVECTOR>,TriangleList> make_icosphere( int subdivisions )
 	{
 		std::vector<DirectX::XMVECTOR> vertices = icosahedron::vertices;
-		std::vector<short> triangles = icosahedron::triangles;
+		TriangleList triangles = icosahedron::triangles;
 
 		for( int i = 0; i < subdivisions; ++i )
 		{
