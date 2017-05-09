@@ -12,9 +12,9 @@ struct Triangle
 
 namespace icosahedron
 {
-	const float X = 0.5f;
-	const float Z = 0.8f;
-	const float N = 0.5f;
+	const float X=.525731112119133606f;
+	const float Z=.850650808352039932f;
+	const float N=0.f;
 
 	static const std::vector<DirectX::XMVECTOR> vertices =
 	{
@@ -41,7 +41,9 @@ namespace icosahedron
 		auto inserted = lookup.insert( { key, vertices.size( ) } );
 		if( inserted.second )
 		{
-			auto point = DirectX::XMVector4Normalize( DirectX::XMVectorAdd( vertices[first],vertices[second] ) );
+			auto edge1 = vertices[first];
+			auto edge2 = vertices[ second ];
+			auto point = DirectX::XMVector3Normalize( DirectX::XMVectorAdd( edge1,edge2 ) );
 			vertices.push_back( point );
 		}
 

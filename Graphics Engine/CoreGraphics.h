@@ -8,6 +8,9 @@
 #include <DirectXColors.h>
 #include "Keyboard.h"
 #include "Icosahedron.h"
+#include "Mesh.h"
+#include "DirectXMesh.h"
+#include "WaveFrontReader.h"
 
 #define GRAPHICS_EXCEPTION( hr, error ) CoreGraphics::GraphicsException( hr, error, _CRT_WIDE(__FILE__),__LINE__)
 
@@ -58,11 +61,11 @@ public:
 	void Render();
 	void AddVertices( std::vector<VERTEX> newVertices );
 	void SetRotation( float x, float y, float z );
+	void DebugModeToggle();
 private:
 	void SetMatrix();
 	void Initialize();
 	void SetStates();
-	void DebugModeToggle();
 	void LoadResources();
 private:
 	Microsoft::WRL::ComPtr<ID3D11Device> dev;					// the device interface
@@ -94,7 +97,8 @@ private:
 	OFFSET Offset;
 	CBUFFER cBuffer;
 
-	std::pair<std::vector<DirectX::XMVECTOR>, std::vector<Triangle>> Mesh;
+	std::pair<std::vector<DirectX::XMVECTOR>, std::vector<Triangle>> MyMesh;
+	Mesh LoadedMesh;
 
 	float rotateX = 0.0f;
 	float rotateY = 0.0f;

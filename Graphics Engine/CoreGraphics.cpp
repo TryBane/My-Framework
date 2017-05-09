@@ -165,7 +165,7 @@ void CoreGraphics::Initialize()
 
 	HRESULT hr;
 
-	Mesh = icosahedron::make_icosphere( 4 );
+	MyMesh = icosahedron::make_icosphere( 4 );
 
 	/***********************************/
 	/******* Initialize Graphics *******/
@@ -190,10 +190,10 @@ void CoreGraphics::Initialize()
 
 	// create the index buffer
 	D3D11_BUFFER_DESC ibd = {0};
-	ibd.ByteWidth = UINT( sizeof(short) * Mesh.second.size() );
+	ibd.ByteWidth = UINT( sizeof(short) * MyMesh.second.size() );
 	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
-	D3D11_SUBRESOURCE_DATA isrd = { &Mesh.second[0],0,0};
+	D3D11_SUBRESOURCE_DATA isrd = { &MyMesh.second[0],0,0};
 
 
 	if( FAILED( hr = dev->CreateBuffer(&ibd, &isrd, &indexbuffer) ) )
@@ -203,10 +203,10 @@ void CoreGraphics::Initialize()
 
 	// create the vertex buffer
 	D3D11_BUFFER_DESC bd = { 0 };
-	bd.ByteWidth = (UINT)( sizeof(VERTEX) * Mesh.first.size() );
+	bd.ByteWidth = (UINT)( sizeof(VERTEX) * MyMesh.first.size() );
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
-	D3D11_SUBRESOURCE_DATA srd = { &Mesh.first[0], 0, 0};
+	D3D11_SUBRESOURCE_DATA srd = { &MyMesh.first[0], 0, 0};
 
 	if( FAILED( hr = dev->CreateBuffer( &bd,&srd,&pVBuffer ) ) )
 	{
@@ -371,12 +371,11 @@ void CoreGraphics::SetRotation( float x, float y, float z )
 // this function performs updates to the state of the game
 void CoreGraphics::Update()
 {
-	DebugModeToggle();
 }
 
 void CoreGraphics::DebugModeToggle( )
 {
-	
+	debugModeToggle = debugModeToggle ? false : true;
 }
 
 // this function renders a single frame of 3D graphics
@@ -424,7 +423,7 @@ void CoreGraphics::Render()
 	devcon->IASetVertexBuffers(0, 1, pVBuffer.GetAddressOf(), &stride, &offset);
 	devcon->IASetIndexBuffer(indexbuffer.Get(),DXGI_FORMAT_R16_UINT,0 );
 	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	devcon->DrawIndexed( 60,0,0 );
+	devcon->DrawIndexed( 6000,0,0 );
 	devcon->IASetInputLayout(pLayout.Get());
 
 	HRESULT hr;

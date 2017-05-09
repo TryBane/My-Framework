@@ -36,5 +36,9 @@ void Game::Update()
 		y = -0.2f;
 	}
 	
+	if( Window.keyboard.KeyIsPressed( VK_CONTROL ) )
+	{
+		Graphics.DebugModeToggle();
+	}
 	Graphics.SetRotation( x, y, z );
 }
