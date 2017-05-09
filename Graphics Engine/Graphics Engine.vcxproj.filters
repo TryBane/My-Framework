@@ -25,6 +25,9 @@
     <Filter Include="Source Files\Core Framework\Input">
       <UniqueIdentifier>{898c1c86-7315-4ffa-ab62-57aa4222a926}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\3D shapes">
+      <UniqueIdentifier>{1718bc42-98d2-4158-b689-ae45adaceac7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CoreGraphics.cpp">
@@ -41,6 +44,12 @@
     </ClCompile>
     <ClCompile Include="Keyboard.cpp">
       <Filter>Source Files\Core Framework\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Icosahedron.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +70,12 @@
     </ClInclude>
     <ClInclude Include="VertexList.h">
       <Filter>Header Files\Core Framework\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Icosahedron.h">
+      <Filter>Header Files\3D shapes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

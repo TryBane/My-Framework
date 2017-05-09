@@ -7,16 +7,17 @@
 #include <DirectXMath.h>
 #include <DirectXColors.h>
 #include "Keyboard.h"
+#include "Icosahedron.h"
 
 #define GRAPHICS_EXCEPTION( hr, error ) CoreGraphics::GraphicsException( hr, error, _CRT_WIDE(__FILE__),__LINE__)
 
 // a struct to represent a single vertex
 struct VERTEX
 {
-	DirectX::XMVECTORF32 position;			// vertex position
-	DirectX::XMVECTORF32 normal;			// vertex normal direction
-	DirectX::XMVECTORF32 color;				// vertex color
-	DirectX::XMFLOAT2 U, V;
+	DirectX::XMVECTOR position;			// vertex position
+	//DirectX::XMVECTOR normal;			// vertex normal direction
+	//DirectX::XMVECTOR color;				// vertex color
+	//DirectX::XMFLOAT2 U, V;
 };
 
 struct CBUFFER
@@ -56,6 +57,7 @@ public:
 	void Update();
 	void Render();
 	void AddVertices( std::vector<VERTEX> newVertices );
+	void SetRotation( float x, float y, float z );
 private:
 	void SetMatrix();
 	void Initialize();
@@ -91,6 +93,8 @@ private:
 	DirectX::XMMATRIX finalMatrix;
 	OFFSET Offset;
 	CBUFFER cBuffer;
+
+	std::pair<std::vector<DirectX::XMVECTOR>, std::vector<Triangle>> Mesh;
 
 	float rotateX = 0.0f;
 	float rotateY = 0.0f;

@@ -3,6 +3,7 @@
 #include <windowsx.h>
 #include "Window.h"
 #include "CoreGraphics.h"
+#include "Game.h"
 
 // the entry point for any Windows program
 int WINAPI wWinMain(HINSTANCE hInstance,
@@ -16,12 +17,11 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 
 		try
 		{
-			CoreGraphics gfx( window );
+			Game theGame( window );
 			// Enter the infinite message loop
 			while( window.readMessage( ) )
 			{
-				gfx.Update();
-				gfx.Render();
+				theGame.RunGame();
 			}
 		}
 		catch( const MyException& e )

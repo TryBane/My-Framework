@@ -141,7 +141,7 @@ CoreGraphics::CoreGraphics( WindowKey& key )
 
 	devcon->RSSetViewports(1, &viewport);
 
-	AddVertices( OurVertices );
+	//AddVertices( OurVertices );
 
 	Initialize();
 
@@ -164,6 +164,8 @@ void CoreGraphics::Initialize()
 	LoadResources();
 
 	HRESULT hr;
+
+	Mesh = icosahedron::make_icosphere( 4 );
 
 	/***********************************/
 	/******* Initialize Graphics *******/
@@ -188,10 +190,10 @@ void CoreGraphics::Initialize()
 
 	// create the index buffer
 	D3D11_BUFFER_DESC ibd = {0};
-	ibd.ByteWidth = UINT( sizeof(short) * CubeVertexIndices.size() );
+	ibd.ByteWidth = UINT( sizeof(short) * Mesh.second.size() );
 	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
-	D3D11_SUBRESOURCE_DATA isrd = {&CubeVertexIndices[0], 0, 0};
+	D3D11_SUBRESOURCE_DATA isrd = { &Mesh.second[0],0,0};
 
 
 	if( FAILED( hr = dev->CreateBuffer(&ibd, &isrd, &indexbuffer) ) )
@@ -201,10 +203,10 @@ void CoreGraphics::Initialize()
 
 	// create the vertex buffer
 	D3D11_BUFFER_DESC bd = { 0 };
-	bd.ByteWidth = (UINT)( sizeof(VERTEX) * Vertices.size() );
+	bd.ByteWidth = (UINT)( sizeof(VERTEX) * Mesh.first.size() );
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
-	D3D11_SUBRESOURCE_DATA srd = {&Vertices[0], 0, 0};
+	D3D11_SUBRESOURCE_DATA srd = { &Mesh.first[0], 0, 0};
 
 	if( FAILED( hr = dev->CreateBuffer( &bd,&srd,&pVBuffer ) ) )
 	{
@@ -233,9 +235,9 @@ void CoreGraphics::Initialize()
 	D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"COLOR",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		//{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		//{"COLOR",    0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		//{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 48, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 
 	// create and set the input layout
@@ -275,7 +277,7 @@ void CoreGraphics::SetStates( )
 	// Setting up Rasterizer States
 	D3D11_RASTERIZER_DESC rd;
 	rd.FillMode = D3D11_FILL_SOLID;
-	rd.CullMode = D3D11_CULL_BACK;
+	rd.CullMode = D3D11_CULL_NONE;
 	rd.FrontCounterClockwise = false;
 	rd.DepthClipEnable = false;
 	rd.ScissorEnable = false;
@@ -359,6 +361,13 @@ void CoreGraphics::SetMatrix()
 	cBuffer.AmbientColor = DirectX::XMVectorSet( 0.2f, 0.2f, 0.2f, 1.0f );
 }
 
+void CoreGraphics::SetRotation( float x, float y, float z )
+{
+	rotateX += x;
+	rotateY += y;
+	rotateZ += z;
+}
+
 // this function performs updates to the state of the game
 void CoreGraphics::Update()
 {
@@ -415,7 +424,7 @@ void CoreGraphics::Render()
 	devcon->IASetVertexBuffers(0, 1, pVBuffer.GetAddressOf(), &stride, &offset);
 	devcon->IASetIndexBuffer(indexbuffer.Get(),DXGI_FORMAT_R16_UINT,0 );
 	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	devcon->DrawIndexed( 36,0,0 );
+	devcon->DrawIndexed( 60,0,0 );
 	devcon->IASetInputLayout(pLayout.Get());
 
 	HRESULT hr;

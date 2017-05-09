@@ -179,6 +179,8 @@
   <ItemGroup>
     <ClCompile Include="CoreGraphics.cpp" />
     <ClCompile Include="DXErr.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Icosahedron.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -186,6 +188,8 @@
   <ItemGroup>
     <ClInclude Include="CoreGraphics.h" />
     <ClInclude Include="DXErr.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Icosahedron.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="My Exceptions.h" />
     <ClInclude Include="VertexList.h" />
