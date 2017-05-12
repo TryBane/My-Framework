@@ -95,6 +95,7 @@ private:
 	CBUFFER cBuffer;
 
 	std::pair<std::vector<DirectX::XMVECTOR>, std::vector<short>> MyMesh;
+	std::pair<std::vector<DirectX::XMVECTOR>, std::vector<short>> MyMesh2;
 
 	float rotateX = 0.0f;
 	float rotateY = 0.0f;

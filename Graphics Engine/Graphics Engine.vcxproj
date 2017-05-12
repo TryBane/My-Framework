@@ -102,11 +102,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Thomas\Source\Repos\DirectXMesh-master\Utilities;C:\Users\Thomas\Source\Repos\DirectXMesh-master\DirectXMesh;C:\Users\Thomas\Source\Repos\DirectXMesh-master\Meshconvert;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src;%(AdditionalIncludeDirectories);C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src\LinearMath;C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src\BulletSoftBody;C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src\BulletCollision;C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src\BulletDynamics;C:\Users\Thomas\Source\Repos\DirectXMesh-master\Utilities;C:\Users\Thomas\Source\Repos\DirectXMesh-master\DirectXMesh;C:\Users\Thomas\Source\Repos\DirectXMesh-master\Meshconvert;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BulletCollision.lib;BulletDynamics.lib;BulletSoftBody.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
@@ -123,11 +126,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Thomas\Source\Repos\DirectXMesh-master\Utilities;C:\Users\Thomas\Source\Repos\DirectXMesh-master\DirectXMesh;C:\Users\Thomas\Source\Repos\DirectXMesh-master\Meshconvert;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src;%(AdditionalIncludeDirectories);C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src\LinearMath;C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src\BulletSoftBody;C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src\BulletCollision;C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src\BulletDynamics;C:\Users\Thomas\Source\Repos\DirectXMesh-master\Utilities;C:\Users\Thomas\Source\Repos\DirectXMesh-master\DirectXMesh;C:\Users\Thomas\Source\Repos\DirectXMesh-master\Meshconvert;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BulletCollision.lib;BulletDynamics.lib;BulletSoftBody.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
@@ -143,13 +148,16 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Thomas\Source\Repos\DirectXMesh-master\Utilities;C:\Users\Thomas\Source\Repos\DirectXMesh-master\DirectXMesh;C:\Users\Thomas\Source\Repos\DirectXMesh-master\Meshconvert;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src;%(AdditionalIncludeDirectories);C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src\LinearMath;C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src\BulletSoftBody;C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src\BulletCollision;C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src\BulletDynamics;C:\Users\Thomas\Source\Repos\DirectXMesh-master\Utilities;C:\Users\Thomas\Source\Repos\DirectXMesh-master\DirectXMesh;C:\Users\Thomas\Source\Repos\DirectXMesh-master\Meshconvert;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BulletCollision.lib;BulletDynamics.lib;BulletSoftBody.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
@@ -168,13 +176,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Thomas\Source\Repos\DirectXMesh-master\Utilities;C:\Users\Thomas\Source\Repos\DirectXMesh-master\DirectXMesh;C:\Users\Thomas\Source\Repos\DirectXMesh-master\Meshconvert;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src;%(AdditionalIncludeDirectories);C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src\LinearMath;C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src\BulletSoftBody;C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src\BulletCollision;C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\src\BulletDynamics;C:\Users\Thomas\Source\Repos\DirectXMesh-master\Utilities;C:\Users\Thomas\Source\Repos\DirectXMesh-master\DirectXMesh;C:\Users\Thomas\Source\Repos\DirectXMesh-master\Meshconvert;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\Thomas\Source\Repos\My-Framework\bullet3-master\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>BulletCollision.lib;BulletDynamics.lib;BulletSoftBody.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderType>Effect</ShaderType>

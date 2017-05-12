@@ -166,6 +166,10 @@ void CoreGraphics::Initialize()
 
 	MyMesh = icosahedron::make_icosphere( 2 );
 
+	//icosahedron::setIcosahedronLocation( 0.01f, 0.04f, 0.0f );
+
+	//MyMesh2 = icosahedron::make_icosphere(4);
+
 	int size = MyMesh.second.size();
 
 	/***********************************/
@@ -266,9 +270,9 @@ void CoreGraphics::LoadResources()
 {
 	HRESULT hr;
 
-	if( FAILED( hr = DirectX::CreateWICTextureFromFile(dev.Get(),nullptr,L"Hot Chick.jpg",nullptr,&texture,0 ) ) )
+	//if( FAILED( hr = DirectX::CreateWICTextureFromFile(dev.Get(),nullptr,L"Hot Chick.jpg",nullptr,&texture,0 ) ) )
 	{
-		throw GRAPHICS_EXCEPTION( hr,L"Loading Wood.png" );
+	//	throw GRAPHICS_EXCEPTION( hr,L"Loading Wood.png" );
 	}
 }
 
@@ -425,7 +429,7 @@ void CoreGraphics::Render()
 	devcon->IASetVertexBuffers(0, 1, pVBuffer.GetAddressOf(), &stride, &offset);
 	devcon->IASetIndexBuffer(indexbuffer.Get(),DXGI_FORMAT_R16_UINT,0 );
 	devcon->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	devcon->DrawIndexed( 10000,0,0 );
+	devcon->DrawIndexed( 25000,0,0 );
 	devcon->IASetInputLayout(pLayout.Get());
 
 	HRESULT hr;

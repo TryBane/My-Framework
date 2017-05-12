@@ -4,7 +4,8 @@ Game::Game( CoreWindow& Window )
 	:
 	Window( Window ),
 	Graphics( Window )
-{}
+{
+}
 
 void Game::RunGame()
 {

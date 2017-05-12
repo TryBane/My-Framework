@@ -8,9 +8,9 @@
 
 namespace icosahedron
 {
-	const float X=.525731112119133606f;
-	const float Z=.850650808352039932f;
-	const float N=0.f;
+	static float X=.525731112119133606f;
+	static float Z=.850650808352039932f;
+	static float N=0.f;
 
 	using TriangleList=std::vector<short>;
 
@@ -29,6 +29,13 @@ namespace icosahedron
 		6,1,10,9,0,11,9,11,2,9,2,5,7,2,11
 	};
 
+	inline void setIcosahedronLocation( float x, float y, float z )
+	{
+		X = x;
+		Z = z;
+		N = y;
+	}
+
 	inline short vertex_for_edge( std::map<std::pair<short,short>,short>& lookup,
 		std::vector<DirectX::XMVECTOR>& vertices,short first,short second )
 	{
@@ -41,8 +48,7 @@ namespace icosahedron
 		{
 			auto edge1 = vertices[first];
 			auto edge2 = vertices[ second ];
-			auto point = DirectX::XMVector3Normalize( DirectX::XMVectorAdd( edge1,edge2 ) );
-			vertices.push_back( point );
+			vertices.push_back( DirectX::XMVector3Normalize( DirectX::XMVectorAdd( edge1,edge2 ) ) );
 		}
 
 		return inserted.first->second;
